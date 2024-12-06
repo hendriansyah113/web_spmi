@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+      .custom-logo {
+        width: 150px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <h2 class="text-center text-dark mt-5">Selamat Datang</h2>
+          <div class="card my-5">
+            <form class="card-body cardbody-color p-lg-5" id="loginForm">
+              <div class="logo-container">
+                <img src="assets/logo.png" class="custom-logo" alt="logo" />
+              </div>
+
+              <div class="mb-3">
+                <input type="text" class="form-control" id="username" placeholder="Nama Pengguna" required />
+              </div>
+              <div class="mb-3">
+                <input type="password" class="form-control" id="password" placeholder="Kata Sandi" required />
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button>
+              </div>
+              <div id="emailHelp" class="form-text text-center mb-5 text-dark">Belum Terdaftar? <a href="#" class="text-dark fw-bold">Buat Akun</a></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta2/js/bootstrap.min.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah form submit secara default
+
+        // Ambil nilai dari input username dan password
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Lakukan pengecekan sederhana untuk username dan password
+        if (username === 'admin' && password === 'admin123') {
+          window.location.href = './admin'; // Arahkan ke folder coba_kelurahan2
+        } else if (username === 'auditor' && password === 'auditor123') {
+          window.location.href = './user'; // Arahkan ke folder coba_kelurahan
+        } else if (username === 'auditee' && password === 'auditee123') {
+          window.location.href = './user2'; // Arahkan ke folder coba_kelurahan
+        } else {
+          alert('Nama pengguna atau kata sandi salah!'); // Tampilkan pesan error hanya sekali
+        }
+      });
+    </script>
+  </body>
+</html>

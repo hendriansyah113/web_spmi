@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title> KOP SURAT </title>
+    <style type= "text/css">
+    body {font-family: arial; background-color : #ccc }
+    .rangkasurat {width : 980px;margin:0 auto;background-color : #fff;height: 500px;padding: 20px;}
+    table {border-bottom : 5px solid # 000; padding: 2px}
+    .tengah {text-align : center;line-height: 5px;}
+     </style >
+</head>
+<body>
+<div class = "rangkasurat">
+     <table width = "100%">
+           <tr>
+                 <td> <img src="dist/img/log.png" width="140px"> </td>
+                 <td class = "tengah">
+                       <h2>PEMERINTAH DAERAH PROVINSI JAWA BARAT</h2>
+                       <h2>DINAS PENDIDIKAN</h2>
+                       <h2>CABANG DINAS PENDIDIKAN WILAYAH VIII</h2>
+                       <h1>SEKOLAH MENENGAH ATAS NEGERI JATINUNGGAL</h1>
+                       <h1>SUMEDANG</h1>
+                       <b>Jalan Tarikolot Jatinunggal Telp . ( 0262 ) 428590 Sumedang 45376</b>
+                 </td>
+            </tr>
+     </table >
+</div>
+</body>
+</html>

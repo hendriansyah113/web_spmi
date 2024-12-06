@@ -1,0 +1,102 @@
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Mengambil data dari form
+    $standar = $_POST['standar'];
+    $k = $_POST['k'];
+    $indikator_s = $_POST['indikator_s'];
+    $s = $_POST['s'];
+    $indikator = $_POST['indikator'];
+    $skor = $_POST['skor'];
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabel Penilaian AMI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Penilaian Audit Mutu Internal</h1>
+        <h2>Universitas Muhammadiyah Palangkaraya</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Standar</th>
+                    <th>Keterangan (K)</th>
+                    <th>Indikator S</th>
+                    <th>Skor Indikator S</th>
+                    <th>Indikator</th>
+                    <th>Skor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><?php echo htmlspecialchars($standar); ?></td>
+                    <td><?php echo htmlspecialchars($k); ?></td>
+                    <td><?php echo htmlspecialchars($indikator_s); ?></td>
+                    <td><?php echo htmlspecialchars($s); ?></td>
+                    <td><?php echo htmlspecialchars($indikator); ?></td>
+                    <td><?php echo htmlspecialchars($skor); ?></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn" onclick="window.history.back()">Kembali</button>
+    </div>
+</body>
+</html>
