@@ -11,21 +11,25 @@ if (!$conn) {
 }
 
 $tahun = $_GET['tahun'];
+$prodi = $_GET['prodi'];
+
+// Tentukan kolom skor berdasarkan prodi
+$kolom_skor = ($prodi === 'Farmasi') ? 'indikator.skor_farmasi' : 'indikator.skor_analisis_kesehatan';
 
 // Query untuk mengambil data standar, sub-standar, dan indikator
 $query = "
-    SELECT 
+   SELECT 
         standar.id AS standar_id, 
         standar.nama AS standar_nama, 
         sub_standar.id AS sub_standar_id, 
         sub_standar.nama AS sub_standar_nama,
         indikator.id AS indikator_id,
         indikator.nama AS indikator_nama,
-        indikator.skor AS indikator_skor
+        $kolom_skor AS indikator_skor
     FROM standar
     LEFT JOIN sub_standar ON standar.id = sub_standar.standar_id
     LEFT JOIN indikator ON sub_standar.id = indikator.sub_standar_id
-     WHERE standar.tahun = '$tahun'
+    WHERE standar.tahun = '$tahun'
     ORDER BY standar.id, sub_standar.id, indikator.id
 ";
 $result = mysqli_query($conn, $query);
@@ -37,13 +41,14 @@ while ($row = mysqli_fetch_assoc($result)) {
     $standar_nama = $row['standar_nama'] ?: '';
     $sub_standar_nama = $row['sub_standar_nama'] ?: '';
     $indikator_nama = $row['indikator_nama'] ?: '';
+    $indikator_skor = $row['indikator_skor'] ?: 0;
 
     $data[$row['standar_id']]['nama'] = $standar_nama;
     $data[$row['standar_id']]['sub_standar'][$row['sub_standar_id']]['nama'] = $sub_standar_nama;
     $data[$row['standar_id']]['sub_standar'][$row['sub_standar_id']]['indikator'][] = [
         'id' => $row['indikator_id'],
         'nama' => $indikator_nama,
-        'skor' => $row['indikator_skor']
+        'skor' => $indikator_skor
     ];
 }
 
@@ -63,16 +68,17 @@ if ($row = mysqli_fetch_assoc($result_total_indikator)) {
 
 // Query untuk menghitung total skor
 $query_total_skor = "
-    SELECT SUM(indikator.skor) AS total_skor
+    SELECT SUM($kolom_skor) AS total_skor
     FROM indikator
     INNER JOIN sub_standar ON indikator.sub_standar_id = sub_standar.id
     INNER JOIN standar ON sub_standar.standar_id = standar.id
-    WHERE indikator.nama IS NOT NULL AND standar.tahun = '$tahun'
+    WHERE indikator.nama IS NOT NULL 
+      AND standar.tahun = '$tahun'
 ";
 $result_total_skor = mysqli_query($conn, $query_total_skor);
 $total_skor = 0;
 if ($row = mysqli_fetch_assoc($result_total_skor)) {
-    $total_skor = $row['total_skor'];
+    $total_skor = intval($row['total_skor']);
 }
 
 mysqli_close($conn);
@@ -244,7 +250,7 @@ mysqli_close($conn);
                 <h4>TAHUN AJARAN <?= $_GET['tahun'] ?></h4>
             </div>
             <div class="dashboard-header">
-                <h6>Nama Program Studi :</h6>
+                <h6>Nama Program Studi : <?= $prodi ?></h6>
                 <h6>Hari, Tgl Pelaksanaan :</h6>
                 <h6>Jam :</h6>
             </div>
@@ -351,6 +357,7 @@ mysqli_close($conn);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        var prodi = "<?php echo $prodi; ?>"; // $prodi adalah variabel PHP yang berisi data prodi
         // Saat tombol "Penilaian" ditekan
         $('#penilaianModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Tombol yang men-trigger modal
@@ -408,7 +415,8 @@ mysqli_close($conn);
                     url: 'simpan_penilaian.php', // URL PHP yang menyimpan penilaian
                     method: 'POST',
                     data: {
-                        penilaian: soal_data
+                        penilaian: soal_data,
+                        prodi: prodi // Menambahkan nilai 'prodi' ke dalam data
                     },
                     success: function(response) {
                         alert('Penilaian berhasil disimpan!');

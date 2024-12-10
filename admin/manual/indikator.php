@@ -3,7 +3,7 @@
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$dbname = 'spmi';
+$dbname = 'web_spmi';
 $conn = mysqli_connect($host, $user, $password, $dbname);
 
 if (!$conn) {

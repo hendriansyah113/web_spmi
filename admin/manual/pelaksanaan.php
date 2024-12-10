@@ -32,10 +32,11 @@
             $fakultas = $_POST['fakultas'];
             $prodi = $_POST['prodi'];
             $auditor = $_POST['auditor'];
+            $tahun = $_POST['tahun'];
             $keterangan = $_POST['keterangan'];
 
-            $stmt = $conn->prepare("INSERT INTO pelaksanaan (fakultas, prodi, auditor, keterangan) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $fakultas, $prodi, $auditor, $keterangan);
+            $stmt = $conn->prepare("INSERT INTO pelaksanaan (fakultas, prodi, auditor, keterangan, tahun) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $fakultas, $prodi, $auditor, $keterangan, $tahun);
 
             if ($stmt->execute()) {
                 // Mengatur ulang auto-increment
@@ -45,6 +46,7 @@
                 $_POST['fakultas'] = '';
                 $_POST['prodi'] = '';
                 $_POST['auditor'] = '';
+                $_POST['tahun'] = '';
                 $_POST['keterangan'] = '';
             } else {
                 echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
@@ -99,8 +101,14 @@
             </div>
             <div class="form-group">
                 <label for="prodi">Program Studi:</label>
-                <input type="text" class="form-control" id="prodi" name="prodi"
-                    value="<?php echo isset($_POST['prodi']) ? $_POST['prodi'] : ''; ?>" required>
+                <select class="form-control" id="prodi" name="prodi" required>
+                    <option value="Farmasi">Farmasi</option>
+                    <option value="Analisis Kesehatan">Analisis Kesehatan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tahun">Tahun:</label>
+                <input type="number" class="form-control" id="tahun" name="tahun" required>
             </div>
             <div class="form-group">
                 <label for="auditor">Nama Auditor:</label>
@@ -145,7 +153,7 @@
                         echo "<td>" . $row["auditor"] . "</td>";
                         echo "<td>" . $row["keterangan"] . "</td>";
                         echo "<td>" . $row["tahun"] . "</td>";
-                        echo "<td><a href='penilaian.php?tahun=" . $row['tahun'] . "' class='btn btn-info btn-sm'>Penilaian</a></td>";
+                        echo "<td><a href='penilaian.php?tahun=" . $row['tahun'] . "&prodi=" . urlencode($row['prodi']) . "' class='btn btn-info btn-sm'>Penilaian</a></td>";
                         echo "</tr>";
                     }
                 } else {
@@ -177,7 +185,14 @@
                         </div>
                         <div class="form-group">
                             <label for="edit_prodi">Program Studi:</label>
-                            <input type="text" class="form-control" id="edit_prodi" name="edit_prodi" required>
+                            <select class="form-control" id="edit_prodi" name="edit_prodi" required>
+                                <option value="Farmasi">Farmasi</option>
+                                <option value="Analisis Kesehatan">Analisis Kesehatan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tahun">Tahun:</label>
+                            <input type="number" class="form-control" id="tahun" name="tahun" required>
                         </div>
                         <div class="form-group">
                             <label for="edit_auditor">Nama Auditor:</label>

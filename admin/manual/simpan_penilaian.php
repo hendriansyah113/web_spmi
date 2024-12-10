@@ -3,7 +3,7 @@
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$dbname = 'spmi';
+$dbname = 'web_spmi';
 $conn = mysqli_connect($host, $user, $password, $dbname);
 
 if (!$conn) {
@@ -14,8 +14,18 @@ if (!$conn) {
 if (isset($_POST['penilaian']) && is_array($_POST['penilaian'])) {
     $penilaian = $_POST['penilaian'];
 
-    // Siapkan query untuk update penilaian berdasarkan indikator_id
-    $stmt = $conn->prepare("UPDATE indikator SET skor = ? WHERE id = ?");
+    $prodi = $_POST['prodi'];  // Ambil prodi yang diterima dari AJAX
+
+    // Tentukan kolom skor berdasarkan prodi
+    $kolom_skor = ($prodi === 'Farmasi') ? 'indikator.skor_farmasi' : 'indikator.skor_analisis_kesehatan';
+
+
+    // Siapkan query untuk update penilaian berdasarkan indikator_id dan prodi
+    $stmt = $conn->prepare("
+        UPDATE indikator 
+        SET $kolom_skor = ? 
+        WHERE id = ? 
+    ");
 
     // Cek jika prepare gagal
     if ($stmt === false) {
