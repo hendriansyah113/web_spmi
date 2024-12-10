@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +8,11 @@
     <title>Jadwal Audit</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container" style="padding: 20px;">
-        <h2>Tambah Jadwal Pelaksanaan Audit</h2><hr>
+        <h2>Tambah Jadwal Pelaksanaan Audit</h2>
+        <hr>
 
         <?php
         // Koneksi ke database
@@ -91,25 +94,30 @@
             <input type="hidden" name="tambah_data" value="true">
             <div class="form-group">
                 <label for="fakultas">Fakultas:</label>
-                <input type="text" class="form-control" id="fakultas" name="fakultas" value="<?php echo isset($_POST['fakultas']) ? $_POST['fakultas'] : ''; ?>" required>
+                <input type="text" class="form-control" id="fakultas" name="fakultas"
+                    value="<?php echo isset($_POST['fakultas']) ? $_POST['fakultas'] : ''; ?>" required>
             </div>
             <div class="form-group">
                 <label for="prodi">Program Studi:</label>
-                <input type="text" class="form-control" id="prodi" name="prodi" value="<?php echo isset($_POST['prodi']) ? $_POST['prodi'] : ''; ?>" required>
+                <input type="text" class="form-control" id="prodi" name="prodi"
+                    value="<?php echo isset($_POST['prodi']) ? $_POST['prodi'] : ''; ?>" required>
             </div>
             <div class="form-group">
                 <label for="auditor">Nama Auditor:</label>
-                <input type="text" class="form-control" id="auditor" name="auditor" value="<?php echo isset($_POST['auditor']) ? $_POST['auditor'] : ''; ?>" required>
+                <input type="text" class="form-control" id="auditor" name="auditor"
+                    value="<?php echo isset($_POST['auditor']) ? $_POST['auditor'] : ''; ?>" required>
             </div>
             <div class="form-group">
                 <label for="keterangan">Keterangan:</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="3"><?php echo isset($_POST['keterangan']) ? $_POST['keterangan'] : ''; ?></textarea>
+                <textarea class="form-control" id="keterangan" name="keterangan"
+                    rows="3"><?php echo isset($_POST['keterangan']) ? $_POST['keterangan'] : ''; ?></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Simpan</button>
             <a href="http://localhost/web_spmi/admin/#"><input type="button" value="Kembali"></a>
         </form>
 
-        <br><hr>
+        <br>
+        <hr>
         <h3>Data Pelaksanaan Audit</h3>
         <table class="table table-bordered">
             <thead>
@@ -119,10 +127,8 @@
                     <th>Program Studi</th>
                     <th>Auditor</th>
                     <th>Keterangan</th>
+                    <th>Tahun</th>
                     <th>Penilaian</th>
-                    <th>Instrumen</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,35 +137,15 @@
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
+                    while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
                         echo "<td>" . $row["id_pelaksanaan"] . "</td>";
                         echo "<td>" . $row["fakultas"] . "</td>";
                         echo "<td>" . $row["prodi"] . "</td>";
                         echo "<td>" . $row["auditor"] . "</td>";
                         echo "<td>" . $row["keterangan"] . "</td>";
-                        echo "<td><a href='penilaian.html' class='btn btn-info btn-sm'>Penilaian</a></td>";
-                        echo "<td><button class='btn btn-info btn-sm'>Instrumen</button></td>";
-                        echo "<td>
-                                <select class='form-control' name='status' id='status'>
-                                    <option value='Proses'>Proses</option>
-                                    <option value='Belum Selesai'>Belum Selesai</option>
-                                    <option value='Perbaikan'>Perbaikan</option>
-                                </select>
-                              </td>";
-                        echo "<td>
-                                <button class='btn btn-warning btn-sm editBtn' 
-                                        data-id='" . $row["id_pelaksanaan"] . "' 
-                                        data-fakultas='" . $row["fakultas"] . "' 
-                                        data-prodi='" . $row["prodi"] . "' 
-                                        data-auditor='" . $row["auditor"] . "' 
-                                        data-keterangan='" . $row["keterangan"] . "'>
-                                    Edit
-                                </button>
-                                <button class='btn btn-danger btn-sm deleteBtn' 
-                                        data-id='" . $row["id_pelaksanaan"] . "'>Hapus
-                                </button>
-                              </td>";
+                        echo "<td>" . $row["tahun"] . "</td>";
+                        echo "<td><a href='penilaian.php?tahun=" . $row['tahun'] . "' class='btn btn-info btn-sm'>Penilaian</a></td>";
                         echo "</tr>";
                     }
                 } else {
@@ -171,7 +157,8 @@
     </div>
 
     <!-- Modal Edit Data -->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="post" action="">
@@ -198,7 +185,8 @@
                         </div>
                         <div class="form-group">
                             <label for="edit_keterangan">Keterangan:</label>
-                            <textarea class="form-control" id="edit_keterangan" name="edit_keterangan" rows="3" required></textarea>
+                            <textarea class="form-control" id="edit_keterangan" name="edit_keterangan" rows="3"
+                                required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -211,7 +199,8 @@
     </div>
 
     <!-- Modal Delete Data -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="post" action="">
@@ -240,29 +229,30 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-    // Edit button
-    $(".editBtn").click(function(){
-        var id = $(this).data('id');
-        var fakultas = $(this).data('fakultas');
-        var prodi = $(this).data('prodi');
-        var auditor = $(this).data('auditor');
-        var keterangan = $(this).data('keterangan');
+        // Edit button
+        $(".editBtn").click(function() {
+            var id = $(this).data('id');
+            var fakultas = $(this).data('fakultas');
+            var prodi = $(this).data('prodi');
+            var auditor = $(this).data('auditor');
+            var keterangan = $(this).data('keterangan');
 
-        $("#edit_id_pelaksanaan").val(id);
-        $("#edit_fakultas").val(fakultas);
-        $("#edit_prodi").val(prodi);
-        $("#edit_auditor").val(auditor);
-        $("#edit_keterangan").val(keterangan);
+            $("#edit_id_pelaksanaan").val(id);
+            $("#edit_fakultas").val(fakultas);
+            $("#edit_prodi").val(prodi);
+            $("#edit_auditor").val(auditor);
+            $("#edit_keterangan").val(keterangan);
 
-        $("#editModal").modal('show');
-    });
+            $("#editModal").modal('show');
+        });
 
-    // Delete button
-    $(".deleteBtn").click(function(){
-        var id = $(this).data('id');
-        $("#hapus_id_pelaksanaan").val(id);
-        $("#deleteModal").modal('show');
-    });
+        // Delete button
+        $(".deleteBtn").click(function() {
+            var id = $(this).data('id');
+            $("#hapus_id_pelaksanaan").val(id);
+            $("#deleteModal").modal('show');
+        });
     </script>
 </body>
+
 </html>
