@@ -102,6 +102,7 @@ function displayData()
 
     $kolom_upload = ($prodi === 'Farmasi') ? 'upload_dokumen_farmasi' : 'upload_dokumen_ak';
     $kolom_dokumen = ($prodi === 'Farmasi') ? 'kelengkapan_dokumen_farmasi' : 'kelengkapan_dokumen_ak';
+    $catatan = ($prodi === 'Farmasi') ? 'catatan_farmasi' : 'catatan_ak';
 
     // Menampilkan data standar
     $sql = "SELECT * FROM standar_audit WHERE tahun = '$tahun'";
@@ -154,7 +155,7 @@ function displayData()
                     }
                     echo "</td>
                              <td>" . (($audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                            <td>" . $audit['catatan'] . "</td>
+                            <td>" . $audit[$catatan] . "</td>
                             <td>
                                 <form action='upload.php' method='POST' enctype='multipart/form-data'>
                                     <div class='mb-3'>
@@ -181,6 +182,7 @@ function displayData()
             <form action='audit_action.php' method='POST'>
                 <div class='modal-body'>
                     <input type='hidden' name='audit_id' value='" . $audit['id'] . "' />
+                    <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
                     <div class='mb-3'>
                         <label for='keLan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
                         <select name='kelengkapan_dokumen' class='form-control'>
@@ -221,7 +223,7 @@ function displayData()
                             }
                             echo "</td>
                                     <td>" . (($sub_audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                                    <td>" . $sub_audit['catatan'] . "</td>
+                                    <td>" . $sub_audit[$catatan] . "</td>
                                     <td>
                                         <form action='upload.php' method='POST' enctype='multipart/form-data'>
                                             <div class='mb-3'>
@@ -248,6 +250,7 @@ function displayData()
                         <form action='sub_audit_action.php' method='POST'>
                             <div class='modal-body'>
                                 <input type='hidden' name='sub_audit_id' value='" . $sub_audit['id'] . "' />
+                                <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
                                 <div class='mb-3'>
                                     <label for='kelengkapan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
                                     <select name='kelengkapan_dokumen' class='form-control'>

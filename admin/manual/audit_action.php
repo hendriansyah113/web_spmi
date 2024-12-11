@@ -9,7 +9,7 @@ $database = 'web_spmi'; // Nama database
 $conn = new mysqli($host, $username, $password, $database);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sub_audit_id = $_POST['sub_audit_id'];
+    $audit_id = $_POST['audit_id'];
     $kelengkapan_dokumen = $_POST['kelengkapan_dokumen'];
     $catatan = $_POST['catatan'];
     $prodi = $_POST['prodi']; // Menangkap prodi
@@ -23,9 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $kolom_catatan = 'catatan_ak';
     }
 
-    $query = "UPDATE audit_soal SET $kolom_kel_dokumen = ?, $kolom_catatan = ? WHERE id = ?";
+    $query = "UPDATE audit_dokumen SET $kolom_kel_dokumen = ?, $kolom_catatan = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssi', $kelengkapan_dokumen, $catatan, $sub_audit_id);
+    $stmt->bind_param('ssi', $kelengkapan_dokumen, $catatan, $audit_id);
 
     if ($stmt->execute()) {
         echo "<script>
