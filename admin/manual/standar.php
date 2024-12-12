@@ -245,9 +245,8 @@ $result = mysqli_query($conn, "SELECT * FROM standar WHERE tahun = '$tahun' ORDE
                                     data-id="<?= $row['id']; ?>" data-nama="<?= $row['nama']; ?>">Edit</button>
 
                                 <!-- Tombol Hapus -->
-                                <!-- Tombol Hapus -->
-                                <a href="?hapus=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                                <a href="javascript:void(0);" onclick="hapusData(<?= $row['id']; ?>)"
+                                    class="btn btn-danger btn-sm">Hapus</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -291,6 +290,13 @@ $result = mysqli_query($conn, "SELECT * FROM standar WHERE tahun = '$tahun' ORDE
             $('#edit_id_standar').val(id);
             $('#edit_nama_standar').val(nama);
         });
+
+        function hapusData(id) {
+            if (confirm('Yakin ingin menghapus data ini?')) {
+                // Lakukan request ke PHP untuk menghapus data
+                window.location.href = "?hapus=" + id + "&tahun=" + <?= $tahun ?>;
+            }
+        }
     </script>
 </body>
 

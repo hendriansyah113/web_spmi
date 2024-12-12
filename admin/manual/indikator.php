@@ -55,108 +55,108 @@ $result = mysqli_query($conn, "SELECT * FROM indikator WHERE sub_standar_id = $s
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
 
-        .sidebar {
-            background-color: #343a40;
-            color: white;
-            min-height: 100vh;
-            padding: 15px;
-            width: 300px;
-            position: fixed;
-        }
+    .sidebar {
+        background-color: #343a40;
+        color: white;
+        min-height: 100vh;
+        padding: 15px;
+        width: 300px;
+        position: fixed;
+    }
 
-        .sidebar h3 {
-            color: #007bff;
-        }
+    .sidebar h3 {
+        color: #007bff;
+    }
 
-        .sidebar .nav-link {
-            color: #dcdcdc;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 5px;
-        }
+    .sidebar .nav-link {
+        color: #dcdcdc;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+    }
 
-        .sidebar .nav-link.active {
-            color: white;
-            background-color: #007bff;
-        }
+    .sidebar .nav-link.active {
+        color: white;
+        background-color: #007bff;
+    }
 
-        .sidebar .nav-link:hover {
-            color: white;
-            background-color: #007bff;
-        }
+    .sidebar .nav-link:hover {
+        color: white;
+        background-color: #007bff;
+    }
 
-        .sidebar .submenu {
-            margin-left: 20px;
-            font-size: 0.9em;
-        }
+    .sidebar .submenu {
+        margin-left: 20px;
+        font-size: 0.9em;
+    }
 
-        .divider {
-            border-bottom: 1px solid #495057;
-            margin: 15px 0;
-        }
+    .divider {
+        border-bottom: 1px solid #495057;
+        margin: 15px 0;
+    }
 
-        .content {
-            padding: 20px;
-            margin-left: 320px;
-            background-color: #ffffff;
-            width: calc(100% - 320px);
-        }
+    .content {
+        padding: 20px;
+        margin-left: 320px;
+        background-color: #ffffff;
+        width: calc(100% - 320px);
+    }
 
-        .dashboard-header h2 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #343a40;
-        }
+    .dashboard-header h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #343a40;
+    }
 
-        .menu-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
+    .menu-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+    }
 
-        .menu-item {
-            flex: 1;
-            padding: 20px;
-            color: #fff;
-            text-align: center;
-            margin: 0 10px;
-            border-radius: 5px;
-        }
+    .menu-item {
+        flex: 1;
+        padding: 20px;
+        color: #fff;
+        text-align: center;
+        margin: 0 10px;
+        border-radius: 5px;
+    }
 
-        .menu-item a {
-            display: block;
-            margin-top: 10px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    .menu-item a {
+        display: block;
+        margin-top: 10px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+    }
 
-        th {
-            background-color: #f2f2f2;
-        }
+    th {
+        background-color: #f2f2f2;
+    }
 
-        .vertical {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
+    .vertical {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+    }
     </style>
 </head>
 
@@ -212,27 +212,28 @@ $result = mysqli_query($conn, "SELECT * FROM indikator WHERE sub_standar_id = $s
                 <tbody>
                     <?php $no = 1;
                     while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++; ?></td>
-                            <td><?= $row['nama']; ?></td>
-                            <td>
-                                <a href="nilai_indikator.php?id_indikator=<?= $row['id']; ?>"
-                                    class="btn btn-info btn-sm">Lihat
-                                    Nilai Indikator</a>
-                                <!-- Edit Indikator -->
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
-                                    data-id="<?= $row['id']; ?>" data-nama="<?= $row['nama']; ?>">Edit</button>
+                    <tr>
+                        <td><?= $no++; ?></td>
+                        <td><?= $row['nama']; ?></td>
+                        <td>
+                            <a href="nilai_indikator.php?id_indikator=<?= $row['id']; ?>&tahun=<?= $_GET['tahun'] ?>"
+                                class="btn btn-info btn-sm">Lihat
+                                Nilai Indikator</a>
+                            <!-- Edit Indikator -->
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
+                                data-id="<?= $row['id']; ?>" data-nama="<?= $row['nama']; ?>">Edit</button>
 
-                                <!-- Hapus Indikator -->
-                                <a href="?delete_indikator_id=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</a>
-                            </td>
-                        </tr>
+                            <!-- Hapus Indikator -->
+                            <a href="?delete_indikator_id=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</a>
+                        </td>
+                    </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
 
-            <a href="sub_standar.php?standar_id=<?= $sub_standar['standar_id'] ?>" class="btn btn-secondary">Kembali ke
+            <a href="sub_standar.php?standar_id=<?= $sub_standar['standar_id'] ?>&tahun=<?= $_GET['tahun'] ?>"
+                class="btn btn-secondary">Kembali ke
                 Sub-Standar</a>
         </div>
     </div>
@@ -265,16 +266,16 @@ $result = mysqli_query($conn, "SELECT * FROM indikator WHERE sub_standar_id = $s
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Memasukkan data ke dalam modal edit
-        $('#editModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Tombol yang mengklik
-            var indikatorId = button.data('id');
-            var namaIndikator = button.data('nama');
+    // Memasukkan data ke dalam modal edit
+    $('#editModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Tombol yang mengklik
+        var indikatorId = button.data('id');
+        var namaIndikator = button.data('nama');
 
-            var modal = $(this);
-            modal.find('#indikator_id').val(indikatorId);
-            modal.find('#nama_indikator').val(namaIndikator);
-        });
+        var modal = $(this);
+        modal.find('#indikator_id').val(indikatorId);
+        modal.find('#nama_indikator').val(namaIndikator);
+    });
     </script>
 </body>
 

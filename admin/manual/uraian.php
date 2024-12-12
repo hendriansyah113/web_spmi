@@ -10,40 +10,41 @@ if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-// Ambil ID Sub-Standar
-$id_indikator = $_GET['id_indikator'];
+// Ambil ID Standar
+$standar_id = $_GET['standar_id'];
 
-// Tambah data Indikator
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_nilai_indikator'])) {
-    $nama = $_POST['nama_nilai_indikator'];
-    $poin = $_POST['poin'];
-    $query = "INSERT INTO nilai_indikator (id_indikator, poin, nama_nilai_indikator) VALUES ($id_indikator, '$poin' ,'$nama')";
+// Tambah data Sub-Standar
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_uraian'])) {
+    $nama = $_POST['nama_uraian'];
+    $soal_nomor = $_POST['soal_nomor'];
+    $query = "INSERT INTO audit_dokumen (standar_id, soal_nomor, uraian) VALUES ($standar_id, '$soal_nomor', '$nama')";
     mysqli_query($conn, $query);
 }
 
-// Edit data Indikator
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_indikator'])) {
-    $id_indikator = $_POST['id_indikator'];
-    $nama = $_POST['nama_nilai_indikator'];
-    $query = "UPDATE indikator SET nama = '$nama' WHERE id = $id_indikator";
+// Edit data Sub-Standar
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_uraian'])) {
+    $uraian = $_POST['uraian'];
+    $nama = $_POST['nama_uraian'];
+    $soal_nomor = $_POST['nomor_uraian'];
+    $query = "UPDATE audit_dokumen SET uraian = '$nama', soal_nomor = '$soal_nomor' WHERE id = $uraian";
     mysqli_query($conn, $query);
 }
 
-// Hapus data Indikator
-if (isset($_GET['delete_id_indikator'])) {
-    $id_indikator = $_GET['delete_id_indikator'];
-    $query = "DELETE FROM indikator WHERE id = $id_indikator";
+// Hapus data Sub-Standar
+if (isset($_GET['delete_uraian'])) {
+    $uraian = $_GET['delete_uraian'];
+    $query = "DELETE FROM audit_dokumen WHERE id = $uraian";
     mysqli_query($conn, $query);
     // Redirect back to the current page to refresh the data
     header("Location: " . $_SERVER['HTTP_REFERER']);
     exit; // Ensure no further code is executed after the redirect
 }
 
-// Ambil data Sub-Standar
-$indikator = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM indikator WHERE id = $id_indikator"));
+// Ambil data Standar
+$standar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM standar_audit WHERE id = $standar_id"));
 
-// Ambil data Indikator
-$result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator = $id_indikator");
+// Ambil data Sub-Standar
+$result = mysqli_query($conn, "SELECT * FROM audit_dokumen WHERE standar_id = $standar_id");
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +53,7 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Indikator untuk Sub-Standar: <?= $indikator['nama']; ?></title>
+    <title>Tabel Standar, Sub-Standar, dan Indikator</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
@@ -161,6 +162,7 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
     </style>
 </head>
 
+
 <body>
     <div class="d-flex">
         <div class="sidebar">
@@ -173,6 +175,18 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
                     </a>
                 </li>
                 <div class="divider"></div>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-users"></i>&nbsp; User
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="auditor/index.php">Auditor</a></li>
+                        <li><a class="dropdown-item" href="auditee/index.php">Auditee</a></li>
+                    </ul>
+                </li>
+                <div class="divider"></div>
+                <!-- New Menu Item: Audit Mutu Internal -->
                 <li class="nav-item">
                     <a class="nav-link" href="manual/pelaksanaan.php">
                         <i class="fas fa-chart-line"></i>&nbsp; Audit Mutu Internal
@@ -192,32 +206,24 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
             </ul>
         </div>
         <div class="content">
-            <h1>Data Indikator untuk Sub-Standar: <?= $indikator['nama']; ?></h1>
-            <!-- Form Tambah Indikator -->
+            <h1>Data Uraian untuk Standar: <?= $standar['nama_standar']; ?></h1>
+            <!-- Form Tambah Sub-Standar -->
             <form method="POST" class="mb-3">
-                <div class="input-group mb-2">
-                    <input type="text" name="nama_nilai_indikator" class="form-control" placeholder="Nama Indikator"
-                        required>
+                <div class="input-group">
+                    <!-- Input untuk nomor -->
+                    <input type="text" name="soal_nomor" class="form-control" placeholder="Nomor" required>
+                    <input type="text" name="nama_uraian" class="form-control" placeholder="Nama Uraian" required>
+                    <button type="submit" name="add_uraian" class="btn btn-primary">Tambah</button>
                 </div>
-                <div class="input-group mb-3">
-                    <select name="poin" class="form-select" required>
-                        <option value="" disabled selected>Pilih Poin</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-                </div>
-                <button type="submit" name="add_nilai_indikator" class="btn btn-primary">Tambah</button>
             </form>
 
-            <!-- Tabel Indikator -->
+            <!-- Tabel Sub-Standar -->
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Indikator</th>
-                        <th>Poin</th>
+                        <th>Nomor Uraian</th>
+                        <th>Nama Uraian</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -226,16 +232,19 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
                     while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td><?= $no++; ?></td>
-                            <td><?= $row['nama_nilai_indikator']; ?></td>
-                            <td><?= $row['poin']; ?></td>
+                            <td><?= $row['soal_nomor']; ?></td>
+                            <td><?= $row['uraian']; ?></td>
                             <td>
-                                <!-- Edit Indikator -->
+                                <a href="sub_uraian.php?audit_id=<?= $row['id']; ?>&tahun=<?= $_GET['tahun'] ?>"
+                                    class="btn btn-info btn-sm">Lihat
+                                    Sub Uraian</a>
+                                <!-- Edit Sub-Standar -->
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
-                                    data-id="<?= $row['id']; ?>"
-                                    data-nama="<?= $row['nama_nilai_indikator']; ?>">Edit</button>
+                                    data-id="<?= $row['id']; ?>" data-nama="<?= $row['uraian']; ?>"
+                                    data-nomor="<?= $row['soal_nomor']; ?>">Edit</button>
 
-                                <!-- Hapus Indikator -->
-                                <a href="?delete_id_indikator=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
+                                <!-- Hapus Sub-Standar -->
+                                <a href="?delete_uraian=<?= $row['id']; ?>" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</a>
                             </td>
                         </tr>
@@ -243,53 +252,54 @@ $result = mysqli_query($conn, "SELECT * FROM nilai_indikator WHERE id_indikator 
                 </tbody>
             </table>
 
-            <a href="indikator.php?sub_standar_id=<?= $indikator['sub_standar_id'] ?>&tahun=<?= $_GET['tahun'] ?>"
-                class="btn btn-secondary">Kembali ke
-                Sub-Standar</a>
+            <a href="standar_audit.php?tahun=<?= $_GET['tahun'] ?>" class="btn btn-secondary">Kembali ke Standar
+                Audit</a>
         </div>
     </div>
-
-    <!-- Modal Edit Indikator -->
+    <!-- Modal Edit Sub-Standar -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Indikator</h5>
+                    <h5 class="modal-title" id="editModalLabel">Edit Uraian</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="POST">
-                        <input type="hidden" name="id_indikator" id="id_indikator">
+                        <input type="hidden" name="uraian" id="uraian">
+                        <!-- Input untuk Nomor Soal -->
                         <div class="form-group">
-                            <label for="nama_nilai_indikator">Nama Indikator</label>
-                            <input type="text" name="nama_nilai_indikator" class="form-control"
-                                id="nama_nilai_indikator" required>
+                            <label for="nomor_uraian">Nomor Soal</label>
+                            <input type="text" name="nomor_uraian" class="form-control" id="nomor_uraian" required
+                                pattern="^\d+(\.\d+)?$" title="Masukkan nomor yang valid, contoh: 1 atau 1.2">
                         </div>
-
+                        <div class="form-group">
+                            <label for="nama_uraian">Nama Uraian</label>
+                            <input type="text" name="nama_uraian" class="form-control" id="nama_uraian" required>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" name="edit_indikator" class="btn btn-primary">Simpan</button>
+                            <button type="submit" name="edit_uraian" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Memasukkan data ke dalam modal edit
         $('#editModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Tombol yang mengklik
-            var indikatorId = button.data('id');
-            var namaIndikator = button.data('nama');
+            var subStandarId = button.data('id');
+            var namaSubStandar = button.data('nama');
+            var nomorSubStandar = button.data('nomor'); // Nomor Soal
 
             var modal = $(this);
-            modal.find('#id_indikator').val(indikatorId);
-            modal.find('#nama_nilai_indikator').val(namaIndikator);
+            modal.find('#uraian').val(subStandarId);
+            modal.find('#nama_uraian').val(namaSubStandar);
+            modal.find('#nomor_uraian').val(nomorSubStandar); // Set Nomor Soal
         });
     </script>
 </body>
-
-</html>

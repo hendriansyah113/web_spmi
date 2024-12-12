@@ -238,7 +238,7 @@ $result = mysqli_query($conn, "SELECT * FROM standar_audit WHERE tahun = '$tahun
                             <td><?= $no++; ?></td>
                             <td><?= $row['nama_standar']; ?></td>
                             <td>
-                                <a href="sub_standar.php?standar_id=<?= $row['id']; ?>&tahun=<?= $row['tahun']; ?>"
+                                <a href="uraian.php?standar_id=<?= $row['id']; ?>&tahun=<?= $row['tahun']; ?>"
                                     class="btn btn-info btn-sm">Lihat Uraian</a>
                                 <!-- Tombol Edit -->
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"

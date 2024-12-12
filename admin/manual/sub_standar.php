@@ -230,9 +230,9 @@ $result = mysqli_query($conn, "SELECT * FROM sub_standar WHERE standar_id = $sta
                             <td><?= $no++; ?></td>
                             <td><?= $row['nama']; ?></td>
                             <td>
-                                <a href="indikator.php?sub_standar_id=<?= $row['id']; ?>" class="btn btn-info btn-sm">Lihat
+                                <a href="indikator.php?sub_standar_id=<?= $row['id']; ?>&tahun=<?= $_GET['tahun']; ?>"
+                                    class="btn btn-info btn-sm">Lihat
                                     Indikator</a>
-                                <!-- Edit Sub-Standar -->
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
                                     data-id="<?= $row['id']; ?>" data-nama="<?= $row['nama']; ?>">Edit</button>
 
