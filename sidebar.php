@@ -30,22 +30,24 @@ $currentPage = basename($_SERVER['PHP_SELF']); // Ambil nama file dari URL
                 <i class="fas fa-chart-line"></i>&nbsp; Audit Mutu Internal
             </a>
         </li>
+        <?php if ($_SESSION['role'] == 'admin'): ?>
+            <div class="divider"></div>
+            <li class="nav-item">
+                <a class="nav-link nav-link <?= ($currentPage == 'standar.php' || $currentPage == 'sub_standar.php' || $currentPage == 'indikator.php' || $currentPage == 'nilai_indikator.php') ? 'active' : '' ?>"
+                    href="<?= BASE_URL ?>admin/manual/standar.php">
+                    <i class="fas fa-tasks"></i>&nbsp; Kelola Indikator
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link nav-link <?= ($currentPage == 'standar_audit.php' || $currentPage == 'uraian.php' || $currentPage == 'sub_uraian.php') ? 'active' : '' ?>"
+                    href="<?= BASE_URL ?>admin/manual/standar_audit.php">
+                    <i class="fas fa-check-circle"></i>&nbsp; Kelola Audit
+                </a>
+            </li>
+        <?php endif; ?>
         <div class="divider"></div>
         <li class="nav-item">
-            <a class="nav-link nav-link <?= ($currentPage == 'standar.php' || $currentPage == 'sub_standar.php' || $currentPage == 'indikator.php' || $currentPage == 'nilai_indikator.php') ? 'active' : '' ?>"
-                href="<?= BASE_URL ?>admin/manual/standar.php">
-                <i class="fas fa-tasks"></i>&nbsp; Kelola Indikator
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link nav-link <?= ($currentPage == 'standar_audit.php' || $currentPage == 'uraian.php' || $currentPage == 'sub_uraian.php') ? 'active' : '' ?>"
-                href="<?= BASE_URL ?>admin/manual/standar_audit.php">
-                <i class="fas fa-check-circle"></i>&nbsp; Kelola Audit
-            </a>
-        </li>
-        <div class="divider"></div>
-        <li class="nav-item">
-            <a class="nav-link" href="http://localhost/web_spmi/login.html">
+            <a class="nav-link" href="<?= BASE_URL ?>proses_logout.php">
                 <i class="fas fa-sign-out-alt"></i>&nbsp; Logout
             </a>
         </li>

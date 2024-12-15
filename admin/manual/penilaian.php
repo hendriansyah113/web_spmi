@@ -107,10 +107,17 @@ function displayData()
                         <th>Uraian</th>
                         <th>Upload Dokumen</th>
                         <th>Kelengkapan Dokumen</th>
-                        <th>Catatan</th>
-                        <th>Aksi</th>
-                         <th>Aksi Admin</th>
-                    </tr>
+                        <th>Catatan</th>";
+        // Menampilkan kolom Upload terakhir hanya jika role = 'auditee'
+        if ($_SESSION['role'] == 'auditee') {
+            echo "<th>Upload</th>";
+        }
+        // Menampilkan kolom Aksi terakhir hanya jika role = 'auditor'
+        if ($_SESSION['role'] == 'auditor') {
+            echo "<th>Verifikasi</th>";
+        }
+
+        echo "</tr>
                 </thead>
                 <tbody>";
 
@@ -121,10 +128,11 @@ function displayData()
                     <td>" . $row['nama_standar'] . "</td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>";
+                    <td></td>";
+            if ($_SESSION['role'] == 'auditor' || $_SESSION['role'] == 'auditee') {
+                echo "<td></td>";
+            }
+            echo "</tr>";
 
             // Menampilkan soal audit terkait standar ini
             $standar_id = $row['id'];
@@ -145,8 +153,10 @@ function displayData()
                     }
                     echo "</td>
                              <td>" . (($audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                            <td>" . $audit[$catatan] . "</td>
-                            <td>
+                            <td>" . $audit[$catatan] . "</td>";
+
+                    if ($_SESSION['role'] == 'auditee') {
+                        echo "<td>
                                 <form action='upload.php' method='POST' enctype='multipart/form-data'>
                                     <div class='mb-3'>
                                         <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
@@ -155,11 +165,16 @@ function displayData()
                                         <input type='submit' value='Upload' class='btn btn-primary mt-2' />
                                     </div>
                                 </form>
-                            </td>
-                             <td>
+                            </td>";
+                    }
+
+                    if ($_SESSION['role'] == 'auditor') {
+                        echo "<td>
                 <button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalAudit" . $audit['id'] . "'>Aksi Audit</button>
-            </td>
-                          </tr>";
+            </td>";
+                    }
+
+                    echo "</tr>";
 
                     // Modal untuk audit
                     echo "<div class='modal fade' id='modalAudit" . $audit['id'] . "' tabindex='-1' aria-labelledby='modalLabel" . $audit['id'] . "' aria-hidden='true'>
@@ -213,8 +228,10 @@ function displayData()
                             }
                             echo "</td>
                                     <td>" . (($sub_audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                                    <td>" . $sub_audit[$catatan] . "</td>
-                                    <td>
+                                    <td>" . $sub_audit[$catatan] . "</td>";
+
+                            if ($_SESSION['role'] == 'auditee') {
+                                echo " <td>
                                         <form action='upload.php' method='POST' enctype='multipart/form-data'>
                                             <div class='mb-3'>
                                                 <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
@@ -223,11 +240,16 @@ function displayData()
                                                 <input type='submit' value='Upload' class='btn btn-primary mt-2' />
                                             </div>
                                         </form>
-                                    </td>
-                                    <td>
+                                    </td>";
+                            }
+
+                            if ($_SESSION['role'] == 'auditor') {
+                                echo "<td>
                     <button class='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalSubAudit" . $sub_audit['id'] . "'>Aksi Sub-Audit</button>
-                </td>
-                                  </tr>";
+                </td>";
+                            }
+
+                            echo  "</tr>";
 
                             // Modal untuk sub-audit
                             echo "<div class='modal fade' id='modalSubAudit" . $sub_audit['id'] . "' tabindex='-1' aria-labelledby='modalLabel" . $sub_audit['id'] . "' aria-hidden='true'>
@@ -416,8 +438,8 @@ mysqli_close($conn);
                         <th>Sub Standar</th>
                         <th>Indikator</th>
                         <th>Skor</th>
-                        <th>Penilaian</th>
-                    </tr>
+                        <?php if ($_SESSION['role'] == 'auditor'): ?>
+                            <th>Penilaian</th <?php endif; ?> </tr>
                 </thead>
                 <tbody>
                     <?php
@@ -447,15 +469,16 @@ mysqli_close($conn);
                                 <td><?= $sub_standar['indikator'][0]['nama']; ?></td>
                                 <td><?= isset($sub_standar['indikator'][0]['skor']) ? $sub_standar['indikator'][0]['skor'] : 'Tidak ada skor'; ?>
                                 </td>
-
-                                <!-- Kolom Penilaian, tombol untuk membuka modal -->
-                                <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#penilaianModal"
-                                        data-indikator-id="<?= $sub_standar['indikator'][0]['id']; ?>">
-                                        Penilaian
-                                    </button>
-                                </td>
+                                <?php if ($_SESSION['role'] == 'auditor'): ?>
+                                    <!-- Kolom Penilaian, tombol untuk membuka modal -->
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#penilaianModal"
+                                            data-indikator-id="<?= $sub_standar['indikator'][0]['id']; ?>">
+                                            Penilaian
+                                        </button>
+                                    </td>
+                                <?php endif; ?>
                             </tr>
                             <!-- Tampilkan indikator lainnya jika ada -->
                             <?php for ($i = 1; $i < count($sub_standar['indikator']); $i++): ?>
@@ -463,14 +486,15 @@ mysqli_close($conn);
                                     <td><?= $sub_standar['indikator'][$i]['nama']; ?></td>
                                     <td><?= isset($sub_standar['indikator'][$i]['skor']) ? $sub_standar['indikator'][$i]['skor'] : 'Tidak ada skor'; ?>
                                     </td>
-
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#penilaianModal"
-                                            data-indikator-id="<?= $sub_standar['indikator'][$i]['id']; ?>">
-                                            Penilaian
-                                        </button>
-                                    </td>
+                                    <?php if ($_SESSION['role'] == 'auditor'): ?>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#penilaianModal"
+                                                data-indikator-id="<?= $sub_standar['indikator'][$i]['id']; ?>">
+                                                Penilaian
+                                            </button>
+                                        </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endfor; ?>
                         <?php endforeach; ?>
