@@ -94,52 +94,11 @@
 
 <body>
     <div class="d-flex">
-        <div class="sidebar">
-            <h3>Sistem Informasi Audit Mutu Internal (SIAMI)</h3>
-            <p>Universitas Muhammadiyah Palangkaraya</p>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">
-                        <i class="fas fa-home"></i>&nbsp; Dashboard
-                    </a>
-                </li>
-                <div class="divider"></div>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-users"></i>&nbsp; User
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="auditor/index.php">Auditor</a></li>
-                        <li><a class="dropdown-item" href="auditee/index.php">Auditee</a></li>
-                    </ul>
-                </li>
-                <div class="divider"></div>
-                <!-- New Menu Item: Audit Mutu Internal -->
-                <li class="nav-item">
-                    <a class="nav-link" href="manual/pelaksanaan.php">
-                        <i class="fas fa-chart-line"></i>&nbsp; Audit Mutu Internal
-                    </a>
-                </li>
-                <div class="divider"></div>
-                <li class="nav-item">
-                    <a class="nav-link" href="manual/standar.php">
-                        <i class="fas fa-chart-line"></i>&nbsp; Kelola Indikator
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manual/standar_audit.php">
-                        <i class="fas fa-chart-line"></i>&nbsp; Kelola Audit
-                    </a>
-                </li>
-                <div class="divider"></div>
-                <li class="nav-item">
-                    <a class="nav-link" href="http://localhost/web_spmi/login.html">
-                        <i class="fas fa-sign-out-alt"></i>&nbsp; Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-        
+
+        <?php
+        include '../config.php';
+        include '../sidebar.php'; ?>
+
         <div class="content">
             <div class="dashboard-header">
                 <h2>Beranda Aplikasi Admin (Dashboard)</h2>
@@ -164,8 +123,8 @@
                 </div>
             </div>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+            <!-- Bootstrap Bundle with Popper -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

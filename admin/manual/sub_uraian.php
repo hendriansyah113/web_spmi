@@ -1,14 +1,5 @@
 <?php
-// Koneksi ke database
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$dbname = 'web_spmi';
-$conn = mysqli_connect($host, $user, $password, $dbname);
-
-if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
-}
+include '../../config.php';
 
 // Ambil ID Sub-Standar
 $audit_id = $_GET['audit_id'];
@@ -53,6 +44,7 @@ $result = mysqli_query($conn, "SELECT * FROM audit_soal WHERE audit_id = $audit_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Indikator untuk Sub-Standar: <?= $sub_standar['nama']; ?></title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
@@ -162,34 +154,7 @@ $result = mysqli_query($conn, "SELECT * FROM audit_soal WHERE audit_id = $audit_
 
 <body>
     <div class="d-flex">
-        <div class="sidebar">
-            <h3>Sistem Informasi Audit Mutu Internal (SIAMI)</h3>
-            <p>Universitas Muhammadiyah Palangkaraya</p>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">
-                        <i class="fas fa-home"></i>&nbsp; Dashboard
-                    </a>
-                </li>
-                <div class="divider"></div>
-                <li class="nav-item">
-                    <a class="nav-link" href="manual/pelaksanaan.php">
-                        <i class="fas fa-chart-line"></i>&nbsp; Audit Mutu Internal
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manual/standar.php">
-                        <i class="fas fa-chart-line"></i>&nbsp; Kelola Indikator
-                    </a>
-                </li>
-                <div class="divider"></div>
-                <li class="nav-item">
-                    <a class="nav-link" href="http://localhost/web_spmi/login.html">
-                        <i class="fas fa-sign-out-alt"></i>&nbsp; Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <?php include '../../sidebar.php'; ?>
         <div class="content">
             <h1>Data Indikator untuk Sub-Uraian: <?= $uraian['uraian']; ?></h1>
             <!-- Form Tambah Indikator -->
