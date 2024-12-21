@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Des 2024 pada 06.30
+-- Waktu pembuatan: 15 Des 2024 pada 11.45
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 7.4.30
 
@@ -154,18 +154,19 @@ CREATE TABLE `jadwal_ami` (
 CREATE TABLE `login` (
   `id` int(10) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `nama` varchar(50) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `nama` varchar(50) NOT NULL,
+  `role` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `login`
 --
 
-INSERT INTO `login` (`id`, `username`, `password`, `nama`) VALUES
-(1, 'auditee', 'ac7b19332cdf22ce60b441e35d31984e', 'auditee'),
-(2, 'admin', '0192023a7bbd73250516f069df18b500', 'admin'),
-(3, 'auditor', '5cb59fe845b83231b0e5aa95d96267e9', 'auditor');
+INSERT INTO `login` (`id`, `username`, `password`, `nama`, `role`) VALUES
+(1, 'auditee', '$2y$10$Ql4t9eV4YU1Y7AL950Tn6es0czYuhgqtIm4LQ9g6T4RhEMNUHbFeW', 'auditee', 'auditee'),
+(2, 'admin', '$2y$10$Ot776Qzq.THMk9YzhNLJbu1fsYhA1zVzLik2tCPBO6VaE7xdq22MO', 'admin', 'admin'),
+(3, 'auditor', '$2y$10$2MUfnJxdqlmGHTf3FaLLTe/ibLQ31/aTKcIOcycJ5zQvMCzlQtGhC', 'auditor', 'auditor');
 
 -- --------------------------------------------------------
 

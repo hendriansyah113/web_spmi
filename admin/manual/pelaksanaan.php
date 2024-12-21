@@ -120,6 +120,23 @@
         <?php
         include '../../config.php';
         include '../../sidebar.php';
+
+        // Logika untuk mengubah status
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_status'])) {
+            $id = $_POST['id'];
+            $status = $_POST['status'];
+
+            $stmt = $conn->prepare("UPDATE pelaksanaan SET status = ? WHERE id_pelaksanaan = ?");
+            $stmt->bind_param("si", $status, $id);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Status berhasil diubah'); window.location.href='pelaksanaan.php';</script>";
+            } else {
+                echo "<script>alert('Error: " . $conn->error . "'); window.location.href='pelaksanaan.php';</script>";
+            }
+            $stmt->close();
+            exit;
+        }
         ?>
         <div class="content" style="padding: 20px;">
             <h2>Tambah Jadwal Pelaksanaan Audit</h2>
@@ -133,9 +150,10 @@
                 $auditor = $_POST['auditor'];
                 $tahun = $_POST['tahun'];
                 $keterangan = $_POST['keterangan'];
+                $status = 'Ditutup'; // Tambahkan variabel status
 
-                $stmt = $conn->prepare("INSERT INTO pelaksanaan (fakultas, prodi, auditor, keterangan, tahun) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssss", $fakultas, $prodi, $auditor, $keterangan, $tahun);
+                $stmt = $conn->prepare("INSERT INTO pelaksanaan (fakultas, prodi, auditor, keterangan, tahun, status) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssss", $fakultas, $prodi, $auditor, $keterangan, $tahun, $status);
 
                 if ($stmt->execute()) {
                     // Mengatur ulang auto-increment
@@ -234,6 +252,10 @@
                         <th>Auditor</th>
                         <th>Keterangan</th>
                         <th>Tahun</th>
+                        <th>Status</th>
+                        <?php if ($_SESSION['role'] == 'admin'): ?>
+                            <th>Aksi</th>
+                        <?php endif; ?>
                         <th>Penilaian</th>
                     </tr>
                 </thead>
@@ -251,7 +273,28 @@
                             echo "<td>" . $row["auditor"] . "</td>";
                             echo "<td>" . $row["keterangan"] . "</td>";
                             echo "<td>" . $row["tahun"] . "</td>";
-                            echo "<td><a href='penilaian.php?tahun=" . $row['tahun'] . "&prodi=" . urlencode($row['prodi']) . "' class='btn btn-info btn-sm'>Penilaian</a></td>";
+                            echo "<td>";
+                            if ($row["status"] == "Ditutup") {
+                                echo "<span class='badge bg-danger'>Ditutup</span>";
+                            } else {
+                                echo "<span class='badge bg-success'>Dibuka</span>";
+                            }
+                            echo "</td>";
+                            if ($_SESSION['role'] == 'admin') {
+                                echo "<td>";
+                                echo "<form method='post' action=''>";
+                                echo "<input type='hidden' name='id' value='" . $row['id_pelaksanaan'] . "'>";
+                                if ($row["status"] == "Ditutup") {
+                                    echo "<input type='hidden' name='status' value='Dibuka'>";
+                                    echo "<button type='submit' name='change_status' class='btn btn-primary btn-sm'>Ubah ke Dibuka</button>";
+                                } else {
+                                    echo "<input type='hidden' name='status' value='Ditutup'>";
+                                    echo "<button type='submit' name='change_status' class='btn btn-danger btn-sm'>Ubah ke Ditutup</button>";
+                                }
+                                echo "</form>";
+                                echo "</td>";
+                            }
+                            echo "<td><a href='penilaian.php?id_pelaksanaan=" . $row['id_pelaksanaan'] . "&tahun=" . $row['tahun'] . "&prodi=" . urlencode($row['prodi']) . "' class='btn btn-info btn-sm'>Penilaian</a></td>";
                             echo "</tr>";
                         }
                     } else {
@@ -339,9 +382,10 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Edit button

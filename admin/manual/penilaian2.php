@@ -2,7 +2,6 @@
 include '../../config.php';
 $tahun = $_GET['tahun'];
 $prodi = $_GET['prodi'];
-$id_pelaksana = $_GET['id_pelaksanaan'];
 
 // Tentukan kolom skor berdasarkan prodi
 $kolom_skor = ($prodi === 'Farmasi') ? 'skor_farmasi' : 'skor_analisis_kesehatan';
@@ -37,252 +36,13 @@ if ($row = mysqli_fetch_assoc($result_total_skor)) {
 }
 
 // Ambil data standar dari database
-$standarQuery = "SELECT * FROM standar WHERE tahun = '$tahun'";
+$standarQuery = "SELECT * FROM standar";
 $standarResult = mysqli_query($conn, $standarQuery);
 $standarData = [];
 while ($row = mysqli_fetch_assoc($standarResult)) {
     $standarData[] = $row;
 }
 
-// Query untuk mengambil data pelaksanaan
-$query_pelaksanaan = "
-    SELECT status
-    FROM pelaksanaan
-    WHERE id_pelaksanaan = '$id_pelaksana'
-";
-$result_pelaksanaan = mysqli_query($conn, $query_pelaksanaan);
-$status_pelaksanaan = '';
-if ($row = mysqli_fetch_assoc($result_pelaksanaan)) {
-    $status_pelaksanaan = $row['status'];
-}
-
-// Cek apakah status pelaksanaan ditutup
-$aksi_visible = ($status_pelaksanaan !== 'Ditutup');
-
-function displayData()
-{
-    // Koneksi ke database
-    $host = 'localhost';
-    $username = 'root';
-    $password = '';
-    $database = 'web_spmi';
-
-    // Koneksi ke database
-    $conn = new mysqli($host, $username, $password, $database);
-
-    // Cek koneksi
-    if ($conn->connect_error) {
-        die("Koneksi gagal: " . $conn->connect_error);
-    }
-
-    global $tahun;
-    global $prodi;
-    global $aksi_visible;
-
-    $kolom_upload = ($prodi === 'Farmasi') ? 'upload_dokumen_farmasi' : 'upload_dokumen_ak';
-    $kolom_dokumen = ($prodi === 'Farmasi') ? 'kelengkapan_dokumen_farmasi' : 'kelengkapan_dokumen_ak';
-    $catatan = ($prodi === 'Farmasi') ? 'catatan_farmasi' : 'catatan_ak';
-
-    // Menampilkan data standar
-    $sql = "SELECT * FROM standar_audit WHERE tahun = '$tahun'";
-    $result_standar_audit = $conn->query($sql);
-
-    if ($result_standar_audit->num_rows > 0) {
-        // Tampilkan standar dalam baris pertama tabel
-        echo "<table>
-                <thead>
-                    <tr>
-                        <th>Nomor</th>
-                        <th>Uraian</th>
-                        <th>Upload Dokumen</th>
-                        <th>Kelengkapan Dokumen</th>
-                        <th>Catatan</th>";
-        // Menampilkan kolom Upload terakhir hanya jika role = 'auditee'
-        if ($_SESSION['role'] == 'auditee' && $aksi_visible) {
-            echo "<th>Upload</th>";
-        }
-        // Menampilkan kolom Aksi terakhir hanya jika role = 'auditor'
-        if ($_SESSION['role'] == 'auditor' && $aksi_visible) {
-            echo "<th>Verifikasi</th>";
-        }
-
-        echo "</tr>
-                </thead>
-                <tbody>";
-
-        // Menampilkan standar pada baris pertama
-        while ($row = $result_standar_audit->fetch_assoc()) {
-            echo "<tr>
-                    <td>" . $row['id'] . "</td>
-                    <td>" . $row['nama_standar'] . "</td>
-                    <td></td>
-                    <td></td>";
-            if ($_SESSION['role'] == 'auditor' || $_SESSION['role'] == 'auditee' && $aksi_visible) {
-                echo "<td></td>";
-            }
-            echo "</tr>";
-
-            // Menampilkan soal audit terkait standar ini
-            $standar_id = $row['id'];
-            $sql_audit = "SELECT * FROM audit_dokumen WHERE standar_id = $standar_id ORDER BY soal_nomor";
-            $result_audit = $conn->query($sql_audit);
-
-            if ($result_audit->num_rows > 0) {
-                while ($audit = $result_audit->fetch_assoc()) {
-                    echo "<tr>
-                            <td>" . $audit['soal_nomor'] . "</td>
-                            <td>" . $audit['uraian'] . "</td>
-                            <td>";
-                    // Cek apakah ada dokumen yang diupload
-                    if ($audit[$kolom_upload]) {
-                        echo "<a href='uploads/" . $audit[$kolom_upload] . "' target='_blank'>Lihat Dokumen</a>";
-                    } else {
-                        echo "Tidak ada dokumen";
-                    }
-                    echo "</td>
-                             <td>" . (($audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                            <td>" . $audit[$catatan] . "</td>";
-
-                    if ($_SESSION['role'] == 'auditee' && $aksi_visible) {
-                        echo "<td>
-                                <form action='upload.php' method='POST' enctype='multipart/form-data'>
-                                    <div class='mb-3'>
-                                        <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
-                                        <input type='hidden' name='audit_id' value='" . $audit['id'] . "' />
-                                           <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Menambahkan input prodi -->
-                                        <input type='submit' value='Upload' class='btn btn-primary mt-2' />
-                                    </div>
-                                </form>
-                            </td>";
-                    }
-
-                    if ($_SESSION['role'] == 'auditor' && $aksi_visible) {
-                        echo "<td>
-                <button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalAudit" . $audit['id'] . "'>Aksi Audit</button>
-            </td>";
-                    }
-
-                    echo "</tr>";
-
-                    // Modal untuk audit
-                    echo "<div class='modal fade' id='modalAudit" . $audit['id'] . "' tabindex='-1' aria-labelledby='modalLabel" . $audit['id'] . "' aria-hidden='true'>
-    <div class='modal-dialog'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h5 class='modal-title'>Form Audit: " . $audit['uraian'] . "</h5>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-            </div>
-            <form action='audit_action.php' method='POST'>
-                <div class='modal-body'>
-                    <input type='hidden' name='audit_id' value='" . $audit['id'] . "' />
-                    <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
-                    <div class='mb-3'>
-                        <label for='keLan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
-                        <select name='kelengkapan_dokumen' class='form-control'>
-                            <option value='Lengkap'>Lengkap</option>
-                            <option value='Tidak Lengkap'>Tidak Lengkap</option>
-                        </select>
-                    </div>
-                    <div class='mb-3'>
-                        <label for='catatan' class='form-label'>Catatan</label>
-                        <textarea name='catatan' class='form-control' rows='3'></textarea>
-                    </div>
-                </div>
-                <div class='modal-footer'>
-                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Tutup</button>
-                    <button type='submit' class='btn btn-primary'>Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-  </div>";
-
-                    // Menampilkan soal sub audit terkait soal audit ini
-                    $audit_id = $audit['id'];
-                    $sql_sub_audit = "SELECT * FROM audit_soal WHERE audit_id = $audit_id";
-                    $result_sub_audit = $conn->query($sql_sub_audit);
-
-                    if ($result_sub_audit->num_rows > 0) {
-                        while ($sub_audit = $result_sub_audit->fetch_assoc()) {
-                            echo "<tr>
-                                    <td>" . '' . "</td>
-                                    <td>" . $sub_audit['uraian'] . "</td>
-                                    <td>";
-                            // Cek apakah ada dokumen yang diupload untuk sub audit
-                            if ($sub_audit[$kolom_upload]) {
-                                echo "<a href='uploads/" . $sub_audit[$kolom_upload] . "' target='_blank'>Lihat Dokumen</a>";
-                            } else {
-                                echo "Tidak ada dokumen";
-                            }
-                            echo "</td>
-                                    <td>" . (($sub_audit[$kolom_dokumen] === 'Lengkap') ? '✔' : '✖') . "</td>
-                                    <td>" . $sub_audit[$catatan] . "</td>";
-
-                            if ($_SESSION['role'] == 'auditee' && $aksi_visible) {
-                                echo " <td>
-                                        <form action='upload.php' method='POST' enctype='multipart/form-data'>
-                                            <div class='mb-3'>
-                                                <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
-                                                <input type='hidden' name='sub_audit_id' value='" . $sub_audit['id'] . "' />
-                                                   <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Menambahkan input prodi -->
-                                                <input type='submit' value='Upload' class='btn btn-primary mt-2' />
-                                            </div>
-                                        </form>
-                                    </td>";
-                            }
-
-                            if ($_SESSION['role'] == 'auditor' && $aksi_visible) {
-                                echo "<td>
-                    <button class='btn btn-success' data-bs-toggle='modal' data-bs-target='#modalSubAudit" . $sub_audit['id'] . "'>Aksi Sub-Audit</button>
-                </td>";
-                            }
-
-                            echo  "</tr>";
-
-                            // Modal untuk sub-audit
-                            echo "<div class='modal fade' id='modalSubAudit" . $sub_audit['id'] . "' tabindex='-1' aria-labelledby='modalLabel" . $sub_audit['id'] . "' aria-hidden='true'>
-                <div class='modal-dialog'>
-                    <div class='modal-content'>
-                        <div class='modal-header'>
-                            <h5 class='modal-title'>Form Sub-Audit: " . $sub_audit['uraian'] . "</h5>
-                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                        </div>
-                        <form action='sub_audit_action.php' method='POST'>
-                            <div class='modal-body'>
-                                <input type='hidden' name='sub_audit_id' value='" . $sub_audit['id'] . "' />
-                                <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
-                                <div class='mb-3'>
-                                    <label for='kelengkapan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
-                                    <select name='kelengkapan_dokumen' class='form-control'>
-                                        <option value='Lengkap'>Lengkap</option>
-                                        <option value='Tidak Lengkap'>Tidak Lengkap</option>
-                                    </select>
-                                </div>
-                                <div class='mb-3'>
-                                    <label for='catatan' class='form-label'>Catatan</label>
-                                    <textarea name='catatan' class='form-control' rows='3'></textarea>
-                                </div>
-                            </div>
-                            <div class='modal-footer'>
-                                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Tutup</button>
-                                <button type='submit' class='btn btn-primary'>Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-              </div>";
-                        }
-                    }
-                }
-            }
-        }
-
-        echo "</tbody>
-              </table>";
-    } else {
-        echo "<p>Tidak ada data standar ditemukan.</p>";
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -417,6 +177,7 @@ function displayData()
                 <h6>Hari, Tgl Pelaksanaan :</h6>
                 <h6>Jam :</h6>
             </div>
+
             <div class="row">
                 <div class="col-3">
                     <!-- Vertical Tabs for Standar -->
@@ -445,7 +206,7 @@ function displayData()
                                             <th>Sub Standar</th>
                                             <th>Indikator</th>
                                             <th>Skor</th>
-                                            <?php if ($_SESSION['role'] == 'auditor' && $aksi_visible): ?>
+                                            <?php if ($_SESSION['role'] == 'auditor'): ?>
                                                 <th>Penilaian</th>
                                             <?php endif; ?>
                                         </tr>
@@ -465,7 +226,7 @@ function displayData()
                                                     <td><?= $subStandar['nama'] ?></td>
                                                     <td><?= $indikator['nama'] ?></td>
                                                     <td><?= $indikator[$kolom_skor] ?></td>
-                                                    <?php if ($_SESSION['role'] == 'auditor' && $aksi_visible): ?>
+                                                    <?php if ($_SESSION['role'] == 'auditor'): ?>
                                                         <td>
                                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                                 data-bs-target="#penilaianModal"
@@ -491,15 +252,7 @@ function displayData()
                     </div>
                 </div>
             </div>
-            <br>
-            <br>
-            <br>
-            <div class="dashboard-header text-center">
-                <h4>INSTRUMEN KELENGKAPAN DOKUMEN</h4>
-                <h4>AUDIT MUTU INTERNAL TAHUN <?= $_GET['tahun'] ?></h4>
-            </div>
-            <?php displayData(); ?>
-            <br>
+
             <a href="hasil.php?tahun=<?= $tahun ?>&prodi=<?= $prodi ?>" class="btn btn-secondary">Hasil Audit</a>
         </div>
 
