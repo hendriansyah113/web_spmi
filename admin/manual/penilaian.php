@@ -78,6 +78,7 @@ function displayData()
     global $tahun;
     global $prodi;
     global $aksi_visible;
+    global $id_pelaksanaan;
 
     $kolom_upload = ($prodi === 'Farmasi') ? 'upload_dokumen_farmasi' : 'upload_dokumen_ak';
     $kolom_dokumen = ($prodi === 'Farmasi') ? 'kelengkapan_dokumen_farmasi' : 'kelengkapan_dokumen_ak';
@@ -149,6 +150,7 @@ function displayData()
                                     <div class='mb-3'>
                                         <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
                                         <input type='hidden' name='audit_id' value='" . $audit['id'] . "' />
+                                        <input type='hidden' name='tahun' value='" . $tahun . "' /> <!-- Tahun pelaksanaan -->
                                            <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Menambahkan input prodi -->
                                         <input type='submit' value='Upload' class='btn btn-primary mt-2' />
                                     </div>
@@ -176,6 +178,8 @@ function displayData()
                 <div class='modal-body'>
                     <input type='hidden' name='audit_id' value='" . $audit['id'] . "' />
                     <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
+                      <input type='hidden' name='id_pelaksanaan' value='" . $id_pelaksanaan . "' /> <!-- ID pelaksanaan -->
+    <input type='hidden' name='tahun' value='" . $tahun . "' /> <!-- Tahun pelaksanaan -->
                     <div class='mb-3'>
                         <label for='keLan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
                         <select name='kelengkapan_dokumen' class='form-control'>
@@ -224,6 +228,7 @@ function displayData()
                                             <div class='mb-3'>
                                                 <input type='file' name='upload_dokumen' class='form-control' accept='.pdf, .doc, .docx, .jpg, .jpeg, .png' />
                                                 <input type='hidden' name='sub_audit_id' value='" . $sub_audit['id'] . "' />
+                                                <input type='hidden' name='tahun' value='" . $tahun . "' /> <!-- Tahun pelaksanaan -->
                                                    <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Menambahkan input prodi -->
                                                 <input type='submit' value='Upload' class='btn btn-primary mt-2' />
                                             </div>
@@ -251,6 +256,8 @@ function displayData()
                             <div class='modal-body'>
                                 <input type='hidden' name='sub_audit_id' value='" . $sub_audit['id'] . "' />
                                 <input type='hidden' name='prodi' value='" . $prodi . "' /> <!-- Hidden input untuk prodi -->
+                                 <input type='hidden' name='id_pelaksanaan' value='" . $id_pelaksanaan . "' /> <!-- ID pelaksanaan -->
+    <input type='hidden' name='tahun' value='" . $tahun . "' /> <!-- Tahun pelaksanaan -->
                                 <div class='mb-3'>
                                     <label for='kelengkapan_dokumen' class='form-label'>Kelengkapan Dokumen</label>
                                     <select name='kelengkapan_dokumen' class='form-control'>

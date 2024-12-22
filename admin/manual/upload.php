@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['upload_dokumen'])) {
     // Mengambil prodi dan sub_audit_id dari form input
     $prodi = isset($_POST['prodi']) ? $_POST['prodi'] : '';
     $sub_audit_id = isset($_POST['sub_audit_id']) ? $_POST['sub_audit_id'] : '';
+    $tahun = isset($_POST['tahun']) ? $_POST['tahun'] : '';
 
     // Tentukan kolom yang akan diupdate berdasarkan prodi
     if ($prodi === 'Farmasi') {
@@ -48,13 +49,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['upload_dokumen'])) {
             $stmt = $conn->prepare("UPDATE audit_dokumen SET $kolomUpload = ? WHERE id = ?");
 
             $stmt->bind_param("si", $uploadedFile, $audit_id);
+
+            // Query untuk mengambil nama standar
+            $queryNama = $conn->prepare("SELECT * FROM audit_dokumen WHERE id = ?");
+            $queryNama->bind_param("i", $audit_id);
+            $queryNama->execute();
+            $result = $queryNama->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $uraian = $row['uraian'];
+            }
         } elseif (isset($_POST['sub_audit_id'])) {
             $sub_audit_id = $_POST['sub_audit_id'];
             $stmt = $conn->prepare("UPDATE audit_soal SET $kolomUpload = ? WHERE id = ?");
             $stmt->bind_param("si", $uploadedFile, $sub_audit_id);
-        }
 
+            // Query untuk mengambil nama standar
+            $queryNama = $conn->prepare("SELECT uraian FROM audit_soal WHERE id = ?");
+            $queryNama->bind_param("i", $sub_audit_id);
+            $queryNama->execute();
+            $result = $queryNama->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $uraian = $row['uraian'];
+            }
+        }
         if (isset($stmt) && $stmt->execute()) {
+            // Tambahkan notifikasi ke tabel `notifications`
+            $formLink = $_SERVER['HTTP_REFERER']; // Link form
+            $message = "Auditee telah mengunggah dokumen untuk standar \"$uraian\" pada prodi $prodi tahun $tahun. <a href='$formLink'>Lihat dokumen</a>";
+            $audite_id = $_SESSION['audite_id']; // ID penerima notifikasi
+            $role = "auditee"; // Sesuaikan dengan role pengguna
+
+            $notifStmt = $conn->prepare("INSERT INTO notifications (role, message, form_link) VALUES ('auditor', ?, ?)");
+            $notifStmt->bind_param("ss", $message, $formLink);
+            $notifStmt->execute();
             echo "<script>
                 alert('Dokumen berhasil diunggah.');
                 window.location.href = document.referrer;

@@ -1,3 +1,13 @@
+<?php
+include '../config.php';
+
+$role = $_SESSION['role']; // ID pengguna yang login
+
+// Query notifikasi untuk pengguna tertentu
+$query = "SELECT id, message, form_link, is_read, created_at FROM notifications WHERE role = '$role' AND is_read = 0 ORDER BY created_at DESC";
+$result = $conn->query($query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -96,7 +106,6 @@
     <div class="d-flex">
 
         <?php
-        include '../config.php';
         include '../sidebar.php'; ?>
 
         <div class="content">
@@ -122,9 +131,50 @@
                     <a href="manual/gkm.php">Lihat</a>
                 </div>
             </div>
+            <!-- Notifikasi -->
+            <div class="notifications mt-4">
+                <h4>Notifikasi</h4>
+                <ul class="list-group">
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <li class="list-group-item <?= $row['is_read'] === '0' ? 'list-group-item-warning' : ''; ?>"
+                        onclick="markAsRead(<?= $row['id']; ?>, '<?= $row['form_link']; ?>')">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1"><?= $row['message']; ?></p>
+                                <small class="text-muted"><?= $row['created_at']; ?></small>
+                            </div>
+                            <i class="fa <?= $row['is_read'] === '0' ? 'fa-envelope' : 'fa-envelope-open'; ?>"></i>
+                        </div>
+                    </li>
+                    <?php endwhile; ?>
+                </ul>
+            </div>
+        </div>
 
-            <!-- Bootstrap Bundle with Popper -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+        function markAsRead(notificationId, link) {
+            // Kirim permintaan ke server untuk memperbarui status is_read
+            fetch('notifikasi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: notificationId
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Redirect ke link setelah berhasil
+                    window.location.href = link;
+                } else {
+                    alert('Gagal memperbarui status notifikasi.');
+                }
+            });
+        }
+        </script>
 </body>
 
 </html>
