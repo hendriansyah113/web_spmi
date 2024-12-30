@@ -268,9 +268,10 @@
                     $result = $conn->query($sql);
 
                     if ($result->num_rows > 0) {
+                        $no = 1; // Inisialisasi nomor urut
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td>" . $row["id_pelaksanaan"] . "</td>";
+                            echo "<td>" . $no++ . "</td>"; // Tampilkan nomor urut
                             echo "<td>" . $row["fakultas"] . "</td>";
                             echo "<td>" . $row["prodi"] . "</td>";
                             echo "<td>" . $row["auditor"] . "</td>";

@@ -20,15 +20,18 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Program Studi</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container" style="padding: 20px;">
-        <h2>Daftar Program Studi</h2><hr>
+        <h2>Daftar Program Studi</h2>
+        <hr>
 
         <!-- Tabel Data Program Studi -->
         <table class="table table-bordered">
@@ -45,10 +48,11 @@ $result = $conn->query($sql);
                 <?php
                 // Menampilkan data dari tabel prodi
                 if ($result->num_rows > 0) {
+                    $no = 0;
                     // Output data untuk setiap baris
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>
-                                <td>" . $row["id_prodi"] . "</td>
+                                <td>" . $no++ . "</td>
                                 <td>" . $row["prodi"] . "</td>
                                 <td>" . $row["fakultas"] . "</td>
                                 <td>" . $row["kaprodi"] . "</td>
@@ -70,6 +74,7 @@ $result = $conn->query($sql);
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
 
 <?php
