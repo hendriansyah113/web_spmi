@@ -114,7 +114,7 @@ function displayData()
         // Menampilkan standar pada baris pertama
         while ($row = $result_standar_audit->fetch_assoc()) {
             echo "<tr>
-                    <td>" . $row['id'] . "</td>
+                    <td></td>
                     <td>" . $row['nama_standar'] . "</td>
                     <td></td>
                     <td></td>";
