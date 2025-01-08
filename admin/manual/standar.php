@@ -29,7 +29,7 @@ if (isset($_GET['hapus'])) {
 }
 
 // Ambil data Standar berdasarkan tahun
-$result = mysqli_query($conn, "SELECT * FROM standar WHERE tahun = '$tahun' ORDER BY id DESC");
+$result = mysqli_query($conn, "SELECT * FROM standar WHERE tahun = '$tahun' ORDER BY id ASC");
 
 ?>
 

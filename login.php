@@ -13,34 +13,33 @@ if (!$conn) {
 }
 // Proses saat form login dikirim
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $nama = $_POST['nama'];
     $password = $_POST['password'];
 
-    // Query untuk mencari user berdasarkan username
-    $query = "SELECT id, username, password, nama, role FROM login WHERE username = ?";
+    // Query untuk mencari user berdasarkan nama
+    $query = "SELECT id, nama, password, role FROM login WHERE nama = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $nama);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Periksa apakah username ditemukan
+    // Periksa apakah nama ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         // Verifikasi password
         if (password_verify($password, $row['password'])) {
             // Simpan data ke session
             $_SESSION['id'] = $row['id'];
-            $_SESSION['username'] = $row['username'];
             $_SESSION['nama'] = $row['nama'];
             $_SESSION['role'] = $row['role'];
 
             header("Location: ./admin/");
             exit();
         } else {
-            echo "<script>alert('Kata sandi atau Username Salah!');</script>";
+            echo "<script>alert('Kata sandi atau nama Salah!');</script>";
         }
     } else {
-        echo "<script>alert('Kata sandi atau Username Salah!');</script>";
+        echo "<script>alert('Kata sandi atau nama Salah!');</script>";
     }
     $stmt->close();
 }
@@ -57,17 +56,17 @@ $conn->close();
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta2/css/bootstrap.min.css">
     <style>
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
 
-        .custom-logo {
-            width: 150px;
-            height: auto;
-        }
+    .custom-logo {
+        width: 150px;
+        height: auto;
+    }
     </style>
 </head>
 
@@ -83,8 +82,7 @@ $conn->close();
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" class="form-control" name="username" placeholder="Nama Pengguna"
-                                required>
+                            <input type="text" class="form-control" name="nama" placeholder="Nama Pengguna" required>
                         </div>
                         <div class="mb-3">
                             <input type="password" class="form-control" name="password" placeholder="Kata Sandi"

@@ -120,6 +120,10 @@
         <?php
         include '../../config.php';
         include '../../sidebar.php';
+        ob_start(); // Mulai output buffering
+
+        // Periksa apakah pengguna adalah admin
+        $is_admin = ($_SESSION['role'] === 'admin');
 
         // Logika untuk mengubah status
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_status'])) {
@@ -171,74 +175,73 @@
                 $stmt->close();
             }
 
-            // Edit Data
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_data'])) {
+            // Tangani permintaan edit
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_data'])) {
                 $id_pelaksanaan = $_POST['edit_id_pelaksanaan'];
                 $fakultas = $_POST['edit_fakultas'];
                 $prodi = $_POST['edit_prodi'];
                 $auditor = $_POST['edit_auditor'];
                 $keterangan = $_POST['edit_keterangan'];
-
-                $stmt = $conn->prepare("UPDATE pelaksanaan SET fakultas=?, prodi=?, auditor=?, keterangan=? WHERE id_pelaksanaan=?");
-                $stmt->bind_param("ssssi", $fakultas, $prodi, $auditor, $keterangan, $id_pelaksanaan);
-
+                $tahun = $_POST['edit_tahun'];
+                // Tambahkan query untuk memperbarui data di database
+                $query = "UPDATE pelaksanaan SET fakultas = ?, prodi = ?, auditor = ?, keterangan = ?, tahun = ? WHERE id_pelaksanaan = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("ssssii", $fakultas, $prodi, $auditor, $keterangan, $tahun, $id_pelaksanaan);
                 if ($stmt->execute()) {
-                    echo "<div class='alert alert-success'>Data berhasil diupdate</div>";
+                    echo "<script>alert('Data Berhasil Diedit'); window.location.href='pelaksanaan.php';</script>";
                 } else {
-                    echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
+                    echo "<script>alert('Error: " . $conn->error . "'); window.location.href='pelaksanaan.php';</script>";
                 }
-                $stmt->close();
             }
 
-            // Hapus Data
-            if (isset($_POST["hapus_data"])) {
-                $id_pelaksanaan = $_POST['hapus_id_pelaksanaan'];
-
-                $stmt = $conn->prepare("DELETE FROM pelaksanaan WHERE id_pelaksanaan=?");
+            // Tangani permintaan hapus
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_data'])) {
+                $id_pelaksanaan = $_POST['delete_id_pelaksanaan'];
+                // Tambahkan query untuk menghapus data dari database
+                $query = "DELETE FROM pelaksanaan WHERE id_pelaksanaan = ?";
+                $stmt = $conn->prepare($query);
                 $stmt->bind_param("i", $id_pelaksanaan);
-
                 if ($stmt->execute()) {
-                    // Mengatur ulang auto-increment setelah data dihapus
-                    $conn->query("ALTER TABLE pelaksanaan AUTO_INCREMENT = 1");
-                    echo "<div class='alert alert-success'>Data berhasil dihapus</div>";
+                    echo "<script>alert('Data Berhasil Dihapus'); window.location.href='pelaksanaan.php';</script>";
                 } else {
-                    echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
+                    echo "<script>alert('Error: " . $conn->error . "'); window.location.href='pelaksanaan.php';</script>";
                 }
-                $stmt->close();
             }
             ?>
 
             <!-- Form Tambah Data -->
-            <form method="post" action="">
-                <input type="hidden" name="tambah_data" value="true">
-                <div class="form-group">
-                    <label for="fakultas">Fakultas:</label>
-                    <input type="text" class="form-control" id="fakultas" name="fakultas"
-                        value="<?php echo isset($_POST['fakultas']) ? $_POST['fakultas'] : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="prodi">Program Studi:</label>
-                    <select class="form-control" id="prodi" name="prodi" required>
-                        <option value="Farmasi">Farmasi</option>
-                        <option value="Analisis Kesehatan">Analisis Kesehatan</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="tahun">Tahun:</label>
-                    <input type="number" class="form-control" id="tahun" name="tahun" required>
-                </div>
-                <div class="form-group">
-                    <label for="auditor">Nama Auditor:</label>
-                    <input type="text" class="form-control" id="auditor" name="auditor"
-                        value="<?php echo isset($_POST['auditor']) ? $_POST['auditor'] : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="keterangan">Keterangan:</label>
-                    <textarea class="form-control" id="keterangan" name="keterangan"
-                        rows="3"><?php echo isset($_POST['keterangan']) ? $_POST['keterangan'] : ''; ?></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Simpan</button>
-            </form>
+            <?php if ($is_admin): ?>
+                <form method="post" action="">
+                    <input type="hidden" name="tambah_data" value="true">
+                    <div class="form-group">
+                        <label for="fakultas">Fakultas:</label>
+                        <input type="text" class="form-control" id="fakultas" name="fakultas"
+                            value="<?php echo isset($_POST['fakultas']) ? $_POST['fakultas'] : ''; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prodi">Program Studi:</label>
+                        <select class="form-control" id="prodi" name="prodi" required>
+                            <option value="Farmasi">Farmasi</option>
+                            <option value="Analisis Kesehatan">Analisis Kesehatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tahun">Tahun:</label>
+                        <input type="number" class="form-control" id="tahun" name="tahun" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auditor">Nama Auditor:</label>
+                        <input type="text" class="form-control" id="auditor" name="auditor"
+                            value="<?php echo isset($_POST['auditor']) ? $_POST['auditor'] : ''; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="keterangan">Keterangan:</label>
+                        <textarea class="form-control" id="keterangan" name="keterangan"
+                            rows="3"><?php echo isset($_POST['keterangan']) ? $_POST['keterangan'] : ''; ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+            <?php endif; ?>
 
             <br>
             <hr>
@@ -253,7 +256,7 @@
                         <th>Keterangan</th>
                         <th>Tahun</th>
                         <th>Status</th>
-                        <?php if ($_SESSION['role'] == 'admin'): ?>
+                        <?php if ($is_admin): ?>
                             <th>Aksi</th>
                         <?php endif; ?>
                         <th>Penilaian</th>
@@ -265,9 +268,10 @@
                     $result = $conn->query($sql);
 
                     if ($result->num_rows > 0) {
+                        $no = 1; // Inisialisasi nomor urut
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td>" . $row["id_pelaksanaan"] . "</td>";
+                            echo "<td>" . $no++ . "</td>"; // Tampilkan nomor urut
                             echo "<td>" . $row["fakultas"] . "</td>";
                             echo "<td>" . $row["prodi"] . "</td>";
                             echo "<td>" . $row["auditor"] . "</td>";
@@ -280,9 +284,9 @@
                                 echo "<span class='badge bg-success'>Dibuka</span>";
                             }
                             echo "</td>";
-                            if ($_SESSION['role'] == 'admin') {
+                            if ($is_admin) {
                                 echo "<td>";
-                                echo "<form method='post' action=''>";
+                                echo "<form method='post' action='' style='display:inline-block; margin-right: 5px;'>";
                                 echo "<input type='hidden' name='id' value='" . $row['id_pelaksanaan'] . "'>";
                                 if ($row["status"] == "Ditutup") {
                                     echo "<input type='hidden' name='status' value='Dibuka'>";
@@ -291,6 +295,11 @@
                                     echo "<input type='hidden' name='status' value='Ditutup'>";
                                     echo "<button type='submit' name='change_status' class='btn btn-danger btn-sm'>Ubah ke Ditutup</button>";
                                 }
+                                echo "</form>";
+                                echo "<button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#editModal' data-id='" . $row['id_pelaksanaan'] . "' data-fakultas='" . $row['fakultas'] . "' data-prodi='" . $row['prodi'] . "' data-auditor='" . $row['auditor'] . "' data-keterangan='" . $row['keterangan'] . "' data-tahun='" . $row['tahun'] . "'>Edit</button>";
+                                echo "<form method='post' action='' style='display:inline-block; margin-right: 5px;' onsubmit='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\");'>";
+                                echo "<input type='hidden' name='delete_id_pelaksanaan' value='" . $row['id_pelaksanaan'] . "'>";
+                                echo "<button type='submit' name='delete_data' class='btn btn-danger btn-sm'>Hapus</button>";
                                 echo "</form>";
                                 echo "</td>";
                             }
@@ -326,15 +335,11 @@
                                     required>
                             </div>
                             <div class="form-group">
-                                <label for="edit_prodi">Program Studi:</label>
+                                <label for="edit_prodi">Prodi:</label>
                                 <select class="form-control" id="edit_prodi" name="edit_prodi" required>
                                     <option value="Farmasi">Farmasi</option>
                                     <option value="Analisis Kesehatan">Analisis Kesehatan</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="tahun">Tahun:</label>
-                                <input type="number" class="form-control" id="tahun" name="tahun" required>
                             </div>
                             <div class="form-group">
                                 <label for="edit_auditor">Nama Auditor:</label>
@@ -342,39 +347,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit_keterangan">Keterangan:</label>
-                                <textarea class="form-control" id="edit_keterangan" name="edit_keterangan" rows="3"
+                                <textarea class="form-control" id="edit_keterangan" name="edit_keterangan"
                                     required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_tahun">Tahun:</label>
+                                <input type="number" class="form-control" id="edit_tahun" name="edit_tahun" required>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Delete Data -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="post" action="">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Hapus Data</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="hapus_data" value="true">
-                            <input type="hidden" id="hapus_id_pelaksanaan" name="hapus_id_pelaksanaan">
-                            <p>Apakah Anda yakin ingin menghapus data ini?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-danger">Hapus</button>
                         </div>
                     </form>
                 </div>
@@ -388,28 +371,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Edit button
-        $(".editBtn").click(function() {
-            var id = $(this).data('id');
-            var fakultas = $(this).data('fakultas');
-            var prodi = $(this).data('prodi');
-            var auditor = $(this).data('auditor');
-            var keterangan = $(this).data('keterangan');
-
-            $("#edit_id_pelaksanaan").val(id);
-            $("#edit_fakultas").val(fakultas);
-            $("#edit_prodi").val(prodi);
-            $("#edit_auditor").val(auditor);
-            $("#edit_keterangan").val(keterangan);
-
-            $("#editModal").modal('show');
-        });
-
-        // Delete button
-        $(".deleteBtn").click(function() {
-            var id = $(this).data('id');
-            $("#hapus_id_pelaksanaan").val(id);
-            $("#deleteModal").modal('show');
+        $('#editModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var fakultas = button.data('fakultas');
+            var prodi = button.data('prodi');
+            var auditor = button.data('auditor');
+            var keterangan = button.data('keterangan');
+            var tahun = button.data('tahun');
+            var modal = $(this);
+            modal.find('#edit_id_pelaksanaan').val(id);
+            modal.find('#edit_fakultas').val(fakultas);
+            modal.find('#edit_prodi').val(prodi);
+            modal.find('#edit_auditor').val(auditor);
+            modal.find('#edit_keterangan').val(keterangan);
+            modal.find('#edit_tahun').val(tahun);
         });
     </script>
 </body>

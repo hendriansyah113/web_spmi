@@ -13,21 +13,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_nilai_indikator']
 
 // Edit data Indikator
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_indikator'])) {
-    $id_indikator = $_POST['id_indikator'];
+    $id_indikator_edit = $_POST['id_indikator'];
     $nama = $_POST['nama_nilai_indikator'];
-    $query = "UPDATE indikator SET nama = '$nama' WHERE id = $id_indikator";
+    $query = "UPDATE nilai_indikator SET nama_nilai_indikator = '$nama' WHERE id = $id_indikator_edit";
     mysqli_query($conn, $query);
 }
 
 // Hapus data Indikator
 if (isset($_GET['delete_id_indikator'])) {
-    $id_indikator = $_GET['delete_id_indikator'];
-    $query = "DELETE FROM indikator WHERE id = $id_indikator";
+    $id_indikator_hapus = $_GET['delete_id_indikator'];
+    $query = "DELETE FROM nilai_indikator WHERE id = $id_indikator_hapus";
     mysqli_query($conn, $query);
     // Redirect back to the current page to refresh the data
     header("Location: " . $_SERVER['HTTP_REFERER']);
     exit; // Ensure no further code is executed after the redirect
 }
+
+
 
 // Ambil data Sub-Standar
 $indikator = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM indikator WHERE id = $id_indikator"));

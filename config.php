@@ -15,7 +15,7 @@ if (!$conn) {
 define('BASE_URL', 'http://localhost/web_spmi/');
 
 // Mengecek apakah pengguna sudah login
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['nama'])) {
     // Jika belum login, arahkan ke halaman login
     header('Location: ' . BASE_URL . 'login.php');
     exit(); // Pastikan skrip tidak melanjutkan eksekusi setelah redirect
