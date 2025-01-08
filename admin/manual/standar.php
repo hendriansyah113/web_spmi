@@ -1,10 +1,21 @@
 <?php
 include '../../config.php';
+
 // Mendapatkan tahun saat ini
 $currentYear = date('Y');
+$currentMonth = date('m'); // Mendapatkan bulan saat ini (01 - 12)
 
-// Cek apakah user memilih tahun, jika tidak gunakan tahun saat ini
-$tahun = isset($_GET['tahun']) ? $_GET['tahun'] : $currentYear;
+// Tentukan tahun berdasarkan bulan (semester genap atau ganjil)
+if ($currentMonth >= 1 && $currentMonth <= 6) {
+    // Semester Genap (Januari - Juni): tahun ini / tahun berikutnya
+    $tahun = ($currentYear - 1) . '/' . $currentYear;
+} else {
+    // Semester Ganjil (Juli - Desember): tahun berikutnya / tahun setelahnya
+    $tahun = $currentYear . '/' . ($currentYear + 1);
+}
+
+// Cek apakah ada parameter tahun yang dipilih
+$tahun = isset($_GET['tahun']) ? $_GET['tahun'] : $tahun;  // Jika tidak ada, gunakan tahun default
 
 // Tambah data Standar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_standar'])) {
@@ -156,16 +167,26 @@ $result = mysqli_query($conn, "SELECT * FROM standar WHERE tahun = '$tahun' ORDE
 
         <div class="content">
             <h1>Data Standar</h1>
-            <!-- Pilihan Tahun -->
             <form method="GET" class="mb-3">
                 <label for="tahun" class="form-label">Pilih Tahun</label>
                 <select name="tahun" id="tahun" class="form-select" onchange="this.form.submit()">
                     <?php
-                    for ($i = $currentYear; $i >= $currentYear - 10; $i--): ?>
-                        <option value="<?= $i; ?>" <?= ($i == $tahun) ? 'selected' : ''; ?>><?= $i; ?></option>
-                    <?php endfor; ?>
+                    // Menentukan tahun awal (misalnya tahun 2024)
+                    $startYear = 2024;
+
+                    // Loop untuk menghasilkan tahun ganjil-genap
+                    for ($i = $startYear; $i >= $startYear - 10; $i--) {
+                        $nextYear = $i + 1; // Tahun berikutnya
+                        $label = $i . '/' . $nextYear; // Format tahun ganjil-genap
+
+                        // Menampilkan opsi tahun
+                        echo '<option value="' . $label . '" ' . (($tahun == $label) ? 'selected' : '') . '>' . $label . '</option>';
+                    }
+                    ?>
                 </select>
             </form>
+
+
             <!-- Form Tambah Standar -->
             <form method="POST" class="mb-3">
                 <div class="input-group">

@@ -186,7 +186,7 @@
                 // Tambahkan query untuk memperbarui data di database
                 $query = "UPDATE pelaksanaan SET fakultas = ?, prodi = ?, auditor = ?, keterangan = ?, tahun = ? WHERE id_pelaksanaan = ?";
                 $stmt = $conn->prepare($query);
-                $stmt->bind_param("ssssii", $fakultas, $prodi, $auditor, $keterangan, $tahun, $id_pelaksanaan);
+                $stmt->bind_param("sssssi", $fakultas, $prodi, $auditor, $keterangan, $tahun, $id_pelaksanaan);
                 if ($stmt->execute()) {
                     echo "<script>alert('Data Berhasil Diedit'); window.location.href='pelaksanaan.php';</script>";
                 } else {
@@ -227,7 +227,7 @@
                     </div>
                     <div class="form-group">
                         <label for="tahun">Tahun:</label>
-                        <input type="number" class="form-control" id="tahun" name="tahun" required>
+                        <input type="text" class="form-control" id="tahun" name="tahun" required>
                     </div>
                     <div class="form-group">
                         <label for="auditor">Nama Auditor:</label>
@@ -352,7 +352,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit_tahun">Tahun:</label>
-                                <input type="number" class="form-control" id="edit_tahun" name="edit_tahun" required>
+                                <input type="text" class="form-control" id="edit_tahun" name="edit_tahun" required>
                             </div>
                         </div>
                         <div class="modal-footer">

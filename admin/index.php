@@ -6,6 +6,18 @@ $role = $_SESSION['role']; // ID pengguna yang login
 // Query notifikasi untuk pengguna tertentu
 $query = "SELECT id, message, form_link, is_read, created_at FROM notifications WHERE role = '$role' AND is_read = 0 ORDER BY created_at DESC";
 $result = $conn->query($query);
+
+// Query untuk menghitung jumlah data di tabel gkm_ami
+$sql_gkm = "SELECT COUNT(*) as total FROM gkm_ami";
+$result_gkm = $conn->query($sql_gkm);
+
+// Ambil jumlah total
+$total = 0;
+if ($result_gkm->num_rows > 0) {
+    while ($row = $result_gkm->fetch_assoc()) {
+        $total = $row['total'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -118,17 +130,14 @@ $result = $conn->query($query);
                     <p>Fakultas</p>
                     <a href="fakultas.php">Lihat</a>
                 </div>
-                <div class="menu-item" style="background-color: #F44336;">
-                    <p>Program Studi</p>
-                    <a href="manual/index.php">Baca</a>
-                </div>
                 <div class="menu-item" style="background-color: #2196F3;">
                     <p>Profile</p>
                     <a href="profile.php">Lihat</a>
                 </div>
+                <!-- Div dengan jumlah Gugus Kendali Mutu -->
                 <div class="menu-item" style="background-color: #FFC107;">
-                    <p>Gugus Kendali Mutu</p>
-                    <a href="manual/gkm.php">Lihat</a>
+                    <p>Gugus Kendali Mutu:</p>
+                    <h5><?= $total ?></h5>
                 </div>
             </div>
             <!-- Notifikasi -->
