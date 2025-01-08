@@ -123,8 +123,8 @@ $result = $conn->query($query);
                     <a href="manual/index.php">Baca</a>
                 </div>
                 <div class="menu-item" style="background-color: #2196F3;">
-                    <p>Auditor</p>
-                    <a href="#">Baca</a>
+                    <p>Profile</p>
+                    <a href="profile.php">Lihat</a>
                 </div>
                 <div class="menu-item" style="background-color: #FFC107;">
                     <p>Gugus Kendali Mutu</p>
