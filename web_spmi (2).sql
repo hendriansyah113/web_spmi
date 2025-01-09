@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2025 at 02:37 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Waktu pembuatan: 09 Jan 2025 pada 03.24
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `audit_dokumen`
+-- Struktur dari tabel `audit_dokumen`
 --
 
 CREATE TABLE `audit_dokumen` (
@@ -41,7 +41,7 @@ CREATE TABLE `audit_dokumen` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `audit_dokumen`
+-- Dumping data untuk tabel `audit_dokumen`
 --
 
 INSERT INTO `audit_dokumen` (`id`, `standar_id`, `soal_nomor`, `uraian`, `kelengkapan_dokumen_farmasi`, `kelengkapan_dokumen_ak`, `catatan_farmasi`, `catatan_ak`, `upload_dokumen_farmasi`, `upload_dokumen_ak`) VALUES
@@ -77,7 +77,7 @@ INSERT INTO `audit_dokumen` (`id`, `standar_id`, `soal_nomor`, `uraian`, `keleng
 -- --------------------------------------------------------
 
 --
--- Table structure for table `audit_soal`
+-- Struktur dari tabel `audit_soal`
 --
 
 CREATE TABLE `audit_soal` (
@@ -93,7 +93,7 @@ CREATE TABLE `audit_soal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `audit_soal`
+-- Dumping data untuk tabel `audit_soal`
 --
 
 INSERT INTO `audit_soal` (`id`, `audit_id`, `uraian`, `kelengkapan_dokumen_farmasi`, `kelengkapan_dokumen_ak`, `catatan_farmasi`, `catatan_ak`, `upload_dokumen_farmasi`, `upload_dokumen_ak`) VALUES
@@ -112,7 +112,28 @@ INSERT INTO `audit_soal` (`id`, `audit_id`, `uraian`, `kelengkapan_dokumen_farma
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gkm_ami`
+-- Struktur dari tabel `fakultas`
+--
+
+CREATE TABLE `fakultas` (
+  `id_fakultas` int(11) NOT NULL,
+  `nama_fakultas` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `fakultas`
+--
+
+INSERT INTO `fakultas` (`id_fakultas`, `nama_fakultas`) VALUES
+(1, 'FKIP'),
+(4, 'FBI2'),
+(5, 'FT'),
+(6, 'FAI');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `gkm_ami`
 --
 
 CREATE TABLE `gkm_ami` (
@@ -124,7 +145,7 @@ CREATE TABLE `gkm_ami` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `gkm_ami`
+-- Dumping data untuk tabel `gkm_ami`
 --
 
 INSERT INTO `gkm_ami` (`nidn`, `nama`, `jabatan`, `email`, `foto`) VALUES
@@ -137,7 +158,7 @@ INSERT INTO `gkm_ami` (`nidn`, `nama`, `jabatan`, `email`, `foto`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `indikator`
+-- Struktur dari tabel `indikator`
 --
 
 CREATE TABLE `indikator` (
@@ -149,7 +170,7 @@ CREATE TABLE `indikator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `indikator`
+-- Dumping data untuk tabel `indikator`
 --
 
 INSERT INTO `indikator` (`id`, `sub_standar_id`, `nama`, `skor_farmasi`, `skor_analisis_kesehatan`) VALUES
@@ -219,7 +240,7 @@ INSERT INTO `indikator` (`id`, `sub_standar_id`, `nama`, `skor_farmasi`, `skor_a
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jadwal_ami`
+-- Struktur dari tabel `jadwal_ami`
 --
 
 CREATE TABLE `jadwal_ami` (
@@ -233,31 +254,34 @@ CREATE TABLE `jadwal_ami` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login`
+-- Struktur dari tabel `login`
 --
 
 CREATE TABLE `login` (
   `id` int(10) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
   `nama` varchar(50) NOT NULL,
-  `role` varchar(10) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `role` varchar(10) NOT NULL,
+  `nik` bigint(20) NOT NULL,
+  `jabatan` varchar(100) NOT NULL,
+  `unit_kerja` varchar(100) NOT NULL,
+  `no_hp` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `login`
+-- Dumping data untuk tabel `login`
 --
 
-INSERT INTO `login` (`id`, `username`, `password`, `nama`, `role`) VALUES
-(1, 'auditee', '$2y$10$Ql4t9eV4YU1Y7AL950Tn6es0czYuhgqtIm4LQ9g6T4RhEMNUHbFeW', 'auditee', 'auditee'),
-(2, 'admin', '$2y$10$Ot776Qzq.THMk9YzhNLJbu1fsYhA1zVzLik2tCPBO6VaE7xdq22MO', 'admin', 'admin'),
-(3, 'auditor', '$2y$10$2MUfnJxdqlmGHTf3FaLLTe/ibLQ31/aTKcIOcycJ5zQvMCzlQtGhC', 'auditor', 'auditor'),
-(4, 'misyanto', 'misyanto1', 'misyanto', 'auditor');
+INSERT INTO `login` (`id`, `nama`, `password`, `role`, `nik`, `jabatan`, `unit_kerja`, `no_hp`, `email`) VALUES
+(1, 'auditee', '$2y$10$Ql4t9eV4YU1Y7AL950Tn6es0czYuhgqtIm4LQ9g6T4RhEMNUHbFeW', 'auditee', 6271010407000002, 'IT', 'Programmer', '085252982733', 'ade@gmail.com'),
+(2, 'admin', '$2y$10$X/6oInfvc0SA84UOIXEhvOs6TzL/DXlhhD2SjAtI8hbWzdwGnyEje', 'admin', 6271010407000003, 'IT3', 'Programmer3', '0852529827333', 'ade@gmail.com3'),
+(3, 'auditor', '$2y$10$2MUfnJxdqlmGHTf3FaLLTe/ibLQ31/aTKcIOcycJ5zQvMCzlQtGhC', 'auditor', 6271010407000002, 'IT', 'Programmer', '085252982733', 'ade@gmail.com');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nilai_indikator`
+-- Struktur dari tabel `nilai_indikator`
 --
 
 CREATE TABLE `nilai_indikator` (
@@ -268,7 +292,7 @@ CREATE TABLE `nilai_indikator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `nilai_indikator`
+-- Dumping data untuk tabel `nilai_indikator`
 --
 
 INSERT INTO `nilai_indikator` (`id`, `id_indikator`, `poin`, `nama_nilai_indikator`) VALUES
@@ -508,7 +532,7 @@ INSERT INTO `nilai_indikator` (`id`, `id_indikator`, `poin`, `nama_nilai_indikat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Struktur dari tabel `notifications`
 --
 
 CREATE TABLE `notifications` (
@@ -521,7 +545,7 @@ CREATE TABLE `notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `notifications`
+-- Dumping data untuk tabel `notifications`
 --
 
 INSERT INTO `notifications` (`id`, `role`, `message`, `is_read`, `created_at`, `form_link`) VALUES
@@ -549,7 +573,7 @@ INSERT INTO `notifications` (`id`, `role`, `message`, `is_read`, `created_at`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pelaksanaan`
+-- Struktur dari tabel `pelaksanaan`
 --
 
 CREATE TABLE `pelaksanaan` (
@@ -559,84 +583,104 @@ CREATE TABLE `pelaksanaan` (
   `auditor` varchar(255) NOT NULL,
   `keterangan` text DEFAULT NULL,
   `status` enum('Ditutup','Dibuka') DEFAULT 'Ditutup',
-  `tahun` int(4) NOT NULL
+  `tahun` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pelaksanaan`
+-- Dumping data untuk tabel `pelaksanaan`
 --
 
 INSERT INTO `pelaksanaan` (`id_pelaksanaan`, `fakultas`, `prodi`, `auditor`, `keterangan`, `status`, `tahun`) VALUES
-(6, 'Ilmu Kesehatan', 'Farmasi', 'Misyanto, M.Pd', 'Baik Sekali', 'Dibuka', 2024),
-(7, 'Ilmu Kesehatan', 'Analisis Kesehatan', 'Misyanto, M.Pd', 'Baik', 'Dibuka', 2024);
+(6, 'Ilmu Kesehatan', 'Farmasi', 'Misyanto, M.Pd', 'Baik Sekali', 'Dibuka', '2025/2026'),
+(7, 'Ilmu Kesehatan', 'Analisis Kesehatan', 'Misyanto, M.Pd', 'Baik', 'Dibuka', '2024/2025'),
+(8, 'ddddd', 'Analisis Kesehatan', 'www', 'wwwww', 'Ditutup', '2024/2024'),
+(9, 'kesehatan', 'Farmasi', 'sdcwd', 'wdwd', 'Ditutup', '2025/2026');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `prodi`
+-- Struktur dari tabel `prodi`
 --
 
 CREATE TABLE `prodi` (
   `id_prodi` int(11) NOT NULL,
-  `prodi` varchar(255) NOT NULL,
-  `fakultas` varchar(255) NOT NULL,
-  `kaprodi` varchar(255) NOT NULL,
-  `akreditasi` varchar(50) NOT NULL
+  `id_fakultas` int(11) NOT NULL,
+  `nama_prodi` varchar(255) NOT NULL,
+  `akreditasi` char(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `prodi`
+--
+
+INSERT INTO `prodi` (`id_prodi`, `id_fakultas`, `nama_prodi`, `akreditasi`) VALUES
+(1, 1, 'Ilmu Komunikasi', 'C'),
+(2, 2, 'Ilmu Komputer', 'A'),
+(3, 2, 'Sistem Informasi', 'A'),
+(4, 1, 'Sistem Informasi', 'A'),
+(5, 1, 'Ilmu Komputer', 'F'),
+(6, 1, 'Ilmu Komputer2', 'A'),
+(7, 6, 'agama', 'D'),
+(8, 4, 'sssss', 's');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `standar`
+-- Struktur dari tabel `standar`
 --
 
 CREATE TABLE `standar` (
   `id` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
-  `tahun` int(4) NOT NULL
+  `tahun` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `standar`
+-- Dumping data untuk tabel `standar`
 --
 
 INSERT INTO `standar` (`id`, `nama`, `tahun`) VALUES
-(4, 'standar 4: jurusanm', 2023),
-(8, 'Standar 1: Identitas', 2024),
-(9, 'Standar 2: Kemahasiswaan', 2024),
-(10, 'Standar 3: Sumber Daya Manusia', 2024),
-(11, 'Standar 4: Kurikulum', 2024),
-(12, 'Standar 5: Penelitian dan Pengabdian kepada Masyarakat', 2024),
-(13, 'Standar 6: Luaran dan Capaian Tridharma', 2024);
+(4, 'standar 4: jurusanm', '2025/2026'),
+(8, 'Standar 1: Identitas', '2024/2025'),
+(9, 'Standar 2: Kemahasiswaan', '2024/2025'),
+(10, 'Standar 3: Sumber Daya Manusia', '2024/2025'),
+(11, 'Standar 4: Kurikulum', '2024/2025'),
+(12, 'Standar 5: Penelitian dan Pengabdian kepada Masyarakat', '2024/2025'),
+(13, 'Standar 6: Luaran dan Capaian Tridharma', '2024/2025'),
+(14, 'ddddddd', '2024/2025'),
+(15, 'dddddd', '2022/2023'),
+(16, '2', '2023/2024');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `standar_audit`
+-- Struktur dari tabel `standar_audit`
 --
 
 CREATE TABLE `standar_audit` (
   `id` int(11) NOT NULL,
   `nama_standar` varchar(255) NOT NULL,
-  `tahun` int(4) NOT NULL
+  `tahun` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `standar_audit`
+-- Dumping data untuk tabel `standar_audit`
 --
 
 INSERT INTO `standar_audit` (`id`, `nama_standar`, `tahun`) VALUES
-(4, 'Standar 4 Analisis SWOT', 2023),
-(10, 'sss', 2021),
-(14, 'Standar 1 Identitas ', 2024),
-(15, 'Standar 2 Kemahasiswaan', 2024),
-(16, 'Standar 3 Sumber Daya Manusia', 2024),
-(17, 'Standar 4. Kurikulum', 2024);
+(4, 'Standar 4 Analisis SWOT', '2024/2025'),
+(10, 'sss', '2024/2025'),
+(14, 'Standar 1 Identitas ', '2024/2025'),
+(15, 'Standar 2 Kemahasiswaan', '2023/2024'),
+(16, 'Standar 3 Sumber Daya Manusia', '2023/2024'),
+(17, 'Standar 4. Kurikulum', '2023/2024'),
+(18, '2', '2024/2025'),
+(19, 'w', '2023/2024');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sub_standar`
+-- Struktur dari tabel `sub_standar`
 --
 
 CREATE TABLE `sub_standar` (
@@ -646,7 +690,7 @@ CREATE TABLE `sub_standar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `sub_standar`
+-- Dumping data untuk tabel `sub_standar`
 --
 
 INSERT INTO `sub_standar` (`id`, `standar_id`, `nama`) VALUES
@@ -680,155 +724,167 @@ INSERT INTO `sub_standar` (`id`, `standar_id`, `nama`) VALUES
 --
 
 --
--- Indexes for table `audit_dokumen`
+-- Indeks untuk tabel `audit_dokumen`
 --
 ALTER TABLE `audit_dokumen`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `audit_soal`
+-- Indeks untuk tabel `audit_soal`
 --
 ALTER TABLE `audit_soal`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `gkm_ami`
+-- Indeks untuk tabel `fakultas`
+--
+ALTER TABLE `fakultas`
+  ADD PRIMARY KEY (`id_fakultas`);
+
+--
+-- Indeks untuk tabel `gkm_ami`
 --
 ALTER TABLE `gkm_ami`
   ADD PRIMARY KEY (`nidn`);
 
 --
--- Indexes for table `indikator`
+-- Indeks untuk tabel `indikator`
 --
 ALTER TABLE `indikator`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `jadwal_ami`
+-- Indeks untuk tabel `jadwal_ami`
 --
 ALTER TABLE `jadwal_ami`
   ADD PRIMARY KEY (`id_jadwal`);
 
 --
--- Indexes for table `login`
+-- Indeks untuk tabel `login`
 --
 ALTER TABLE `login`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `nilai_indikator`
+-- Indeks untuk tabel `nilai_indikator`
 --
 ALTER TABLE `nilai_indikator`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `notifications`
+-- Indeks untuk tabel `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `pelaksanaan`
+-- Indeks untuk tabel `pelaksanaan`
 --
 ALTER TABLE `pelaksanaan`
   ADD PRIMARY KEY (`id_pelaksanaan`);
 
 --
--- Indexes for table `prodi`
+-- Indeks untuk tabel `prodi`
 --
 ALTER TABLE `prodi`
   ADD PRIMARY KEY (`id_prodi`);
 
 --
--- Indexes for table `standar`
+-- Indeks untuk tabel `standar`
 --
 ALTER TABLE `standar`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `standar_audit`
+-- Indeks untuk tabel `standar_audit`
 --
 ALTER TABLE `standar_audit`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `sub_standar`
+-- Indeks untuk tabel `sub_standar`
 --
 ALTER TABLE `sub_standar`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `audit_dokumen`
+-- AUTO_INCREMENT untuk tabel `audit_dokumen`
 --
 ALTER TABLE `audit_dokumen`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
--- AUTO_INCREMENT for table `audit_soal`
+-- AUTO_INCREMENT untuk tabel `audit_soal`
 --
 ALTER TABLE `audit_soal`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT for table `indikator`
+-- AUTO_INCREMENT untuk tabel `fakultas`
+--
+ALTER TABLE `fakultas`
+  MODIFY `id_fakultas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT untuk tabel `indikator`
 --
 ALTER TABLE `indikator`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
--- AUTO_INCREMENT for table `jadwal_ami`
+-- AUTO_INCREMENT untuk tabel `jadwal_ami`
 --
 ALTER TABLE `jadwal_ami`
   MODIFY `id_jadwal` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `login`
+-- AUTO_INCREMENT untuk tabel `login`
 --
 ALTER TABLE `login`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `nilai_indikator`
+-- AUTO_INCREMENT untuk tabel `nilai_indikator`
 --
 ALTER TABLE `nilai_indikator`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
--- AUTO_INCREMENT for table `notifications`
+-- AUTO_INCREMENT untuk tabel `notifications`
 --
 ALTER TABLE `notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT for table `pelaksanaan`
+-- AUTO_INCREMENT untuk tabel `pelaksanaan`
 --
 ALTER TABLE `pelaksanaan`
-  MODIFY `id_pelaksanaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pelaksanaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `prodi`
+-- AUTO_INCREMENT untuk tabel `prodi`
 --
 ALTER TABLE `prodi`
-  MODIFY `id_prodi` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_prodi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `standar`
+-- AUTO_INCREMENT untuk tabel `standar`
 --
 ALTER TABLE `standar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `standar_audit`
+-- AUTO_INCREMENT untuk tabel `standar_audit`
 --
 ALTER TABLE `standar_audit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `sub_standar`
+-- AUTO_INCREMENT untuk tabel `sub_standar`
 --
 ALTER TABLE `sub_standar`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;

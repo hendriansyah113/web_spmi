@@ -214,8 +214,10 @@ if (isset($_GET['hapus_prodi'])) {
             <div class="row">
                 <!-- Sidebar Fakultas -->
                 <div class="col-4">
-                    <button class="btn btn-primary w-100 mb-3" data-bs-toggle="modal"
-                        data-bs-target="#modalTambahFakultas">Tambah Fakultas</button>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                        <button class="btn btn-primary w-100 mb-3" data-bs-toggle="modal"
+                            data-bs-target="#modalTambahFakultas">Tambah Fakultas</button>
+                    <?php endif; ?>
                     <div class="list-group">
                         <?php while ($fakultas = mysqli_fetch_assoc($fakultas_result)): ?>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
@@ -223,18 +225,20 @@ if (isset($_GET['hapus_prodi'])) {
                                     class="text-decoration-none text-dark flex-grow-1">
                                     <?= $fakultas['nama_fakultas'] ?>
                                 </a>
-                                <div class="btn-group">
-                                    <a href="#" class="btn btn-sm btn-warning text-light btn-edit"
-                                        data-id="<?= $fakultas['id_fakultas'] ?>"
-                                        data-nama="<?= $fakultas['nama_fakultas'] ?>">
-                                        Edit
-                                    </a>
-                                    <a href="?hapus_fakultas=<?= $fakultas['id_fakultas'] ?>"
-                                        class="btn btn-sm btn-danger text-light"
-                                        onclick="return confirm('Apakah Anda yakin ingin menghapus fakultas ini?')">
-                                        Hapus
-                                    </a>
-                                </div>
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                    <div class="btn-group">
+                                        <a href="#" class="btn btn-sm btn-warning text-light btn-edit"
+                                            data-id="<?= $fakultas['id_fakultas'] ?>"
+                                            data-nama="<?= $fakultas['nama_fakultas'] ?>">
+                                            Edit
+                                        </a>
+                                        <a href="?hapus_fakultas=<?= $fakultas['id_fakultas'] ?>"
+                                            class="btn btn-sm btn-danger text-light"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus fakultas ini?')">
+                                            Hapus
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endwhile; ?>
                     </div>
@@ -255,15 +259,19 @@ if (isset($_GET['hapus_prodi'])) {
                         $fakultas_name = mysqli_fetch_assoc($fakultas_name_result)['nama_fakultas'];
                     ?>
                         <h4>Prodi di <?= $fakultas_name ?></h4>
-                        <button class="btn btn-success mb-3" data-bs-toggle="modal"
-                            data-bs-target="#modalTambahProdi">Tambah
-                            Prodi</button>
+                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                            <button class="btn btn-success mb-3" data-bs-toggle="modal"
+                                data-bs-target="#modalTambahProdi">Tambah
+                                Prodi</button>
+                        <?php endif; ?>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Nama Prodi</th>
                                     <th>Akreditasi</th>
-                                    <th>Aksi</th>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                        <th>Aksi</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -271,15 +279,17 @@ if (isset($_GET['hapus_prodi'])) {
                                     <tr>
                                         <td><?= $prodi['nama_prodi'] ?></td>
                                         <td><?= $prodi['akreditasi'] ?></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning text-light btn-edit-prodi"
-                                                data-id="<?= $prodi['id_prodi'] ?>" data-nama="<?= $prodi['nama_prodi'] ?>"
-                                                data-akreditasi="<?= $prodi['akreditasi'] ?>"
-                                                data-fakultas-id="<?= $prodi['id_fakultas'] ?>">Edit</button>
-                                            <a href="?hapus_prodi=<?= $prodi['id_prodi'] ?>"
-                                                class="btn btn-sm btn-danger text-light"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus prodi ini?')">Hapus</a>
-                                        </td>
+                                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning text-light btn-edit-prodi"
+                                                    data-id="<?= $prodi['id_prodi'] ?>" data-nama="<?= $prodi['nama_prodi'] ?>"
+                                                    data-akreditasi="<?= $prodi['akreditasi'] ?>"
+                                                    data-fakultas-id="<?= $prodi['id_fakultas'] ?>">Edit</button>
+                                                <a href="?hapus_prodi=<?= $prodi['id_prodi'] ?>"
+                                                    class="btn btn-sm btn-danger text-light"
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus prodi ini?')">Hapus</a>
+                                            </td>
+                                        <?php endif; ?>
 
                                     </tr>
                                 <?php endwhile; ?>
